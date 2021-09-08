@@ -20,15 +20,29 @@ const HomeScreen = () => {
 
 	useEffect(() => {
 		async function _getProperties() {
-			const res = await getProperties();
-			if (res.data) {
-				setProperties(res.data);
-				setTimeout(() => setLoading(false), 1000);
-			} else {
-				console.log(res.error);
-			}
+			// const res = await getProperties();
+			// if (res.data) {
+			// 	setProperties(res.data);
+			// 	setTimeout(() => setLoading(false), 1000);
+			// } else {
+			// 	console.log(res.error);
+			// }
 		}
-		_getProperties();
+		// _getProperties();
+		try {
+			getProperties()
+				.then((res) => {
+					if (res.data) {
+						setProperties(res.data);
+						setTimeout(() => setLoading(false), 1000);
+					} else {
+						console.log(res);
+					}
+				})
+				.catch((err) => console.log(err));
+		} catch (e) {
+			console.log('caught err, getProperties, home');
+		}
 
 		if (openHouseID !== null) {
 			setScrollLock(true);

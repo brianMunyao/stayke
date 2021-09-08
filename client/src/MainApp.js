@@ -8,6 +8,7 @@ import LoginScreen from './containers/LoginScreen';
 import MyProperty from './containers/MyProperty';
 import SearchScreen from './containers/SearchScreen';
 import SignUpScreen from './containers/SignUpScreen';
+import PageNotFound from './containers/PageNotFound';
 
 const MainApp = () => {
 	return (
@@ -28,6 +29,8 @@ const MainApp = () => {
 				<Route path="/upload/image" component={AptImgScreen} />
 
 				<Route path="/properties" component={MyProperty} />
+
+				<Route path="*" component={PageNotFound} />
 			</Switch>
 		</Router>
 	);
