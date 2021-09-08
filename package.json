@@ -8,7 +8,7 @@
         "server": "nodemon server.js",
         "client": "cd client && yarn start",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
-        "heroku-postbuild": "cd client && yarn add && yarn build"
+        "heroku-postbuild": "cd client && yarn && yarn build"
     },
     "keywords": [],
     "author": "",
