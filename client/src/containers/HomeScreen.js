@@ -25,7 +25,7 @@ const HomeScreen = () => {
 				setProperties(res.data);
 				setTimeout(() => setLoading(false), 1000);
 			} else {
-				alert(res.error);
+				console.log(res.error);
 			}
 		}
 		_getProperties();

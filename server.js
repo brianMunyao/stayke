@@ -7,11 +7,18 @@ const cloudinary = require('cloudinary');
 require('dotenv').config();
 const pool = require('./db');
 
-const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const PORT = process.env.PORT || 5000;
+const NODE_ENV = process.env.NODE_ENV;
+
+if (NODE_ENV === 'production') {
+    //serve static files
+    app.use(express.static(path.join(__dirname, 'client/build')));
+}
 
 cloudinary.config({
     cloud_name: process.env.cloud_name,
@@ -321,6 +328,10 @@ app.get('/search', async(req, res) => {
         result.error = 'Error in searching' + e;
     }
     res.json(result);
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
