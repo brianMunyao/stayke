@@ -19,16 +19,6 @@ const HomeScreen = () => {
 	const [scrollLock, setScrollLock] = useState(false);
 
 	useEffect(() => {
-		async function _getProperties() {
-			// const res = await getProperties();
-			// if (res.data) {
-			// 	setProperties(res.data);
-			// 	setTimeout(() => setLoading(false), 1000);
-			// } else {
-			// 	console.log(res.error);
-			// }
-		}
-		// _getProperties();
 		try {
 			getProperties()
 				.then((res) => {

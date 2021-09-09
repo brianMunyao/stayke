@@ -50,6 +50,7 @@ app.post('/api/login', async(req, res) => {
             res.json(result);
         }
     } catch (e) {
+        console.log(e);
         result.error = 'Server error. Try again later.';
         res.json(result);
     }
@@ -72,6 +73,7 @@ app.post('/api/signup', async(req, res) => {
             result.data = {...user.rows[0], hasProperties: false };
         }
     } catch (e) {
+        console.log(e);
         result.error = 'Error creating account. Try again later.';
     }
     res.json(result);
@@ -115,6 +117,7 @@ app.route('/api')
             );
             result.data = properties.rows;
         } catch (e) {
+            console.log(e);
             result.error = 'Error getting houses';
         }
         res.json(result);
@@ -130,6 +133,7 @@ app.route('/api')
             );
             result.data = newProperty.rows[0];
         } catch (e) {
+            console.log(e);
             result.error = 'Server error. Try again later.';
             console.log(e);
         }
@@ -145,6 +149,7 @@ app.get('/api/properties/:id', async(req, res) => {
         );
         result.data = properties.rows;
     } catch (e) {
+        console.log(e);
         result.error = 'Error getting houses';
     }
     res.json(result);
@@ -173,6 +178,7 @@ app.route('/api/property/:id')
             result.data = property.rows[0];
             result.related = related.rows.filter((r) => r.img1);
         } catch (e) {
+            console.log(e);
             result.error = 'Error getting house';
         }
         res.json(result);
@@ -227,6 +233,7 @@ app.route('/api/property/:id')
                     res.json(result);
                 });
             } catch (e) {
+                console.log(e);
                 result.error = 'File not accessible';
                 res.json(result);
             }
@@ -237,6 +244,7 @@ app.route('/api/property/:id')
                 );
                 result.data = updated.rows[0];
             } catch (e) {
+                console.log(e);
                 result.error = 'Could not update information';
             }
             res.json(result);
@@ -250,6 +258,7 @@ app.route('/api/property/:id')
             );
             result.data = removed.rows[0];
         } catch (e) {
+            console.log(e);
             result.error = 'Unable to delete property';
         }
     });
@@ -261,6 +270,7 @@ app.put('/api/property/update/:id', async(req, res) => {
         const removed = await pool.query(query, [req.params.id]);
         result.data = removed.rows[0];
     } catch (e) {
+        console.log(e);
         result.error = 'Unable to delete image';
     }
     res.json(result);
@@ -325,6 +335,7 @@ app.get('/api/search', async(req, res) => {
         let alt = await pool.query(PROPERTY_QUERY + ' WHERE img1 IS NOT null');
         result.alt = alt.rows;
     } catch (e) {
+        console.log(e);
         result.error = 'Error in searching' + e;
     }
     res.json(result);
