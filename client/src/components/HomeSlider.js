@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
 import colors from '../config/colors';
+import main from '../assets/main.jpg';
 
 const HomeSlider = ({ data }) => {
 	const [searchTerm, setSearchTerm] = useState('');
@@ -27,11 +28,17 @@ const HomeSlider = ({ data }) => {
 				autoplaySpeed={3000}
 				slidesToScroll={1}
 				slidesToShow={1}>
-				{data.map((d) => (
-					<div className="image-con" key={d.id}>
-						<img src={d.img1} alt="img1" />
+				{data.length > 0 ? (
+					data.map((d) => (
+						<div className="image-con" key={d.id}>
+							<img src={d.img1} alt="img1" />
+						</div>
+					))
+				) : (
+					<div className="image-con">
+						<img src={main} alt="main" />
 					</div>
-				))}
+				)}
 			</Slider>
 			<div className="title-con">
 				<p className="title">

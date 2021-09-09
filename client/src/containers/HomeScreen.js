@@ -60,33 +60,37 @@ const HomeScreen = () => {
 
 				<HomeSlider data={properties} />
 
-				<div className="houses-section">
-					<p className="featured-title">Featured Houses</p>
+				{properties.length > 0 && (
+					<div className="houses-section">
+						<p className="featured-title">Featured Houses</p>
 
-					<HouseListCon>
-						{properties.map((p, index) => (
-							<HouseCard
-								key={index}
-								data={p}
-								onClick={() => setOpenHouseID(p.id)}
-							/>
-						))}
-					</HouseListCon>
-				</div>
+						<HouseListCon>
+							{properties.map((p, index) => (
+								<HouseCard
+									key={index}
+									data={p}
+									onClick={() => setOpenHouseID(p.id)}
+								/>
+							))}
+						</HouseListCon>
+					</div>
+				)}
 
-				<div className="houses-section">
-					<p className="featured-title">New Listings</p>
+				{properties.length > 0 && (
+					<div className="houses-section">
+						<p className="featured-title">New Listings</p>
 
-					<HouseListCon>
-						{properties.map((p, index) => (
-							<HouseCard
-								key={index}
-								data={p}
-								onClick={() => setOpenHouseID(p.id)}
-							/>
-						))}
-					</HouseListCon>
-				</div>
+						<HouseListCon>
+							{properties.map((p, index) => (
+								<HouseCard
+									key={index}
+									data={p}
+									onClick={() => setOpenHouseID(p.id)}
+								/>
+							))}
+						</HouseListCon>
+					</div>
+				)}
 
 				<SideView
 					id={openHouseID}
