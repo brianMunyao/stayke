@@ -28,7 +28,7 @@ cloudinary.config({
 });
 
 //---users routes
-app.post('/user/login', async(req, res) => {
+app.post('/api/login', async(req, res) => {
     const result = {};
     try {
         const { email, password } = req.body;
@@ -54,7 +54,7 @@ app.post('/user/login', async(req, res) => {
         res.json(result);
     }
 });
-app.post('/user/signup', async(req, res) => {
+app.post('/api/signup', async(req, res) => {
     const result = {};
     try {
         const { fullname, phone, email, password } = req.body;
@@ -106,7 +106,7 @@ let PROPERTY_QUERY =
 
 //get house data
 
-app.route('/')
+app.route('/api')
     .get(async(req, res) => {
         const result = {};
         try {
@@ -137,7 +137,7 @@ app.route('/')
     });
 
 // //get properties by owner id
-app.get('/properties/:id', async(req, res) => {
+app.get('/api/properties/:id', async(req, res) => {
     const result = {};
     try {
         const properties = await pool.query(
@@ -151,7 +151,7 @@ app.get('/properties/:id', async(req, res) => {
 });
 
 //get specific house
-app.route('/property/:id')
+app.route('/api/property/:id')
     .get(async(req, res) => {
         const result = {};
         try {
@@ -254,7 +254,7 @@ app.route('/property/:id')
         }
     });
 
-app.put('/property/update/:id', async(req, res) => {
+app.put('/api/property/update/:id', async(req, res) => {
     const result = {};
     const query = `UPDATE properties SET ${req.body.label}=null WHERE id=$1 RETURNING *`;
     try {
@@ -266,7 +266,7 @@ app.put('/property/update/:id', async(req, res) => {
     res.json(result);
 });
 
-app.get('/search', async(req, res) => {
+app.get('/api/search', async(req, res) => {
     const result = {};
     const { term, bathrooms, bedrooms, rent } = req.query;
 

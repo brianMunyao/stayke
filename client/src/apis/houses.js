@@ -1,17 +1,17 @@
 import axios from 'axios';
 
 export const createApartment = async(property) => {
-    const { data } = await axios.post(`/`, property);
+    const { data } = await axios.post(`/api`, property);
     return data;
 };
 
 export const searchHouse = async(params) => {
-    const { data } = await axios.get(`/search`, { params });
+    const { data } = await axios.get(`/api/search`, { params });
     return data;
 };
 
 export const getProperty = async(id) => {
-    const { data } = await axios.get(`/property/${id}`);
+    const { data } = await axios.get(`/api/property/${id}`);
     return data;
 };
 
@@ -22,7 +22,7 @@ export const getRelatedProperties = async(
     bathrooms
 ) => {
     try {
-        const { data } = await axios.get(`/search`, {
+        const { data } = await axios.get(`/api/search`, {
             params: { term: '', town, county, bedrooms, bathrooms },
         });
         return data;
@@ -32,28 +32,28 @@ export const getRelatedProperties = async(
 };
 
 export const getProperties = async() => {
-    const { data } = await axios.get(`/`);
+    const { data } = await axios.get(`/api`);
     return data;
 };
 
 export const getMyProperties = async(id) => {
-    const { data } = await axios.get(`/properties/${id}`);
+    const { data } = await axios.get(`/api/properties/${id}`);
     return data;
 };
 
 export const deleteImage = async(id, label) => {
-    const { data } = await axios.put(`/property/update/${id}`, {
+    const { data } = await axios.put(`/api/property/update/${id}`, {
         label,
     });
     return data;
 };
 
 export const updateProperty = async(property) => {
-    const { data } = await axios.put(`/property/${property.id}`, property);
+    const { data } = await axios.put(`/api/property/${property.id}`, property);
     return data;
 };
 
 export const deleteProperty = async(id) => {
-    const { data } = await axios.delete(`/property/${id}`);
+    const { data } = await axios.delete(`/api/property/${id}`);
     return data;
 };
