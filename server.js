@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const cors = require('cors');
 const cloudinary = require('cloudinary');
@@ -190,11 +191,11 @@ app.route('/api/property/:id')
                     } else {
                         result.path = res.req.file.filename;
                         try {
-                            const filepath =
-                                __dirname +
-                                '\\client\\public\\uploads\\' +
-                                req.file.filename;
-
+                            let filepath = path.join(
+                                __dirname,
+                                'client/public/uploads',
+                                req.file.filename
+                            );
                             let imgUpdateQuery =
                                 'UPDATE properties SET img1=$1 WHERE id=$2 RETURNING *';
 
@@ -224,6 +225,7 @@ app.route('/api/property/:id')
                             console.log(cloud_err);
                         }
                     }
+                    fs.unlinkSync(filepath);
                     res.json(result);
                 });
             } catch (e) {

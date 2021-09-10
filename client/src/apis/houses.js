@@ -21,14 +21,10 @@ export const getRelatedProperties = async(
     bedrooms,
     bathrooms
 ) => {
-    try {
-        const { data } = await axios.get(`/api/search`, {
-            params: { term: '', town, county, bedrooms, bathrooms },
-        });
-        return data;
-    } catch (e) {
-        console.log(e);
-    }
+    const { data } = await axios.get(`/api/search`, {
+        params: { term: '', town, county, bedrooms, bathrooms },
+    });
+    return data;
 };
 
 export const getProperties = async() => {

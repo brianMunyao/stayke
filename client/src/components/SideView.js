@@ -174,19 +174,21 @@ const SideView = ({ id, visible, owner, update, close }) => {
 							<>
 								<OwnerContact data={data} />
 
-								<div className="related-houses">
-									<h3>Related properties</h3>
+								{related.length > 0 && (
+									<div className="related-houses">
+										<h3>Related properties</h3>
 
-									<div className="related-list">
-										{related.map((p, index) => (
-											<HouseRelated
-												data={p}
-												key={index}
-												onClick={() => update(p.id)}
-											/>
-										))}
+										<div className="related-list">
+											{related.map((p, index) => (
+												<HouseRelated
+													data={p}
+													key={index}
+													onClick={() => update(p.id)}
+												/>
+											))}
+										</div>
 									</div>
-								</div>
+								)}
 							</>
 						)}
 					</div>
