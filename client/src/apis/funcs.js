@@ -1,3 +1,5 @@
+import md5 from 'md5';
+
 export const capitalize = (str = '') => {
     return str
         .split(' ')
@@ -7,4 +9,8 @@ export const capitalize = (str = '') => {
 
 export const money = (str = '') => {
     return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const encrypt = (str = '') => {
+    return md5(str);
 };

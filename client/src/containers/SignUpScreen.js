@@ -8,6 +8,7 @@ import { IoCall, IoLockClosed, IoMail, IoPerson } from 'react-icons/io5';
 import { isLoggedIn, registerUser } from '../apis/users';
 import FormItem from '../components/FormItem';
 import FormContainer from './FormContainer';
+import { encrypt } from '../apis/funcs';
 
 const SignUpScreen = () => {
 	const [formError, setFormError] = useState('');
@@ -39,7 +40,10 @@ const SignUpScreen = () => {
 			setSubmitting(true);
 			setFormError('');
 			try {
-				const res = await registerUser(values);
+				const res = await registerUser({
+					...values,
+					password: encrypt(values.password),
+				});
 				if (res.data) {
 					setCookie('user', res.data);
 				} else {
