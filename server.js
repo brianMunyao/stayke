@@ -218,14 +218,21 @@ app.route('/api/property/:id')
                                                 r.secure_url,
                                                 id,
                                             ])
-                                            .then((re) => console.log(re.rows))
-                                            .catch((e) => console.log(e));
+                                            .then((re) =>
+                                                console.log(
+                                                    'updated:',
+                                                    re.rowCount + ' rows'
+                                                )
+                                            )
+                                            .catch((e) =>
+                                                console.log('query-cloud:', e)
+                                            );
 
                                         result.data = r.secure_url;
                                     }
                                 );
                             } catch (cloud_err) {
-                                console.log(cloud_err);
+                                console.log('cloud_err:', cloud_err);
                             }
                         }
 
