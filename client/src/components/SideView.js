@@ -18,37 +18,38 @@ import colors from '../config/colors';
 import AppSlider from './AppSlider';
 import EditableText from './EditableText';
 import HouseRelated from './HouseRelated';
+import Loader from './Loader';
 import OwnerContact from './OwnerContact';
 import ToExit from './ToExit';
+import animation from '../assets/load-house.json';
 
 const SideView = ({ id, visible, owner, update, close }) => {
 	const [cookies] = useCookies(['user']);
 	const [related, setRelated] = useState([]);
 	const [data, setData] = useState({});
-	const [loaded, setLoaded] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [toEdit, setToEdit] = useState({ key: '', value: '' });
 
 	const history = useHistory();
 
 	useEffect(() => {
-		const _getRelated = async (_id) => {
-			try {
-				const res = await getProperty(_id);
-				if (res.data) {
-					setData(res.data);
-					setRelated(res.related.filter((h) => h.id !== id));
-					setLoaded(true);
-				}
-			} catch (e) {
-				console.log(e);
-			}
-		};
-
 		if (id !== null && visible) {
-			_getRelated(id);
+			try {
+				getProperty(id)
+					.then((res) => {
+						if (res.data) {
+							setData(res.data);
+							setRelated(res.related.filter((h) => h.id !== id));
+							setLoading(false);
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			} catch (e) {}
 			document.querySelector('#divBody').scrollTo(0, 0);
 		}
-	}, [id, loaded, owner, visible]);
+	}, [id, owner, visible]);
 
 	const addImage = () => history.push('/upload/image/', id);
 
@@ -93,106 +94,112 @@ const SideView = ({ id, visible, owner, update, close }) => {
 		<>
 			<ToExit visible={visible} right={490} onClick={close} />
 			<Container id="divBody" visible={visible}>
-				<main>
-					<div className="close">
-						<FaTimesCircle onClick={close} />
-					</div>
-
-					{owner ? (
-						<div className="image-list">
-							<ImageOwner image={data.img1} label="img1" />
-							<ImageOwner image={data.img2} label="img2" />
+				{loading ? (
+					<Loader animation={animation} speed={2} height={100} />
+				) : (
+					<main>
+						<div className="close">
+							<FaTimesCircle onClick={close} />
 						</div>
-					) : data.img2 ? (
-						<AppSlider
-							height={250}
-							data={[data.img1, data.img2]}
-							autoplay={false}
-							rounded
-						/>
-					) : (
-						<AppSlider
-							height={250}
-							data={[data.img1]}
-							autoplay={false}
-							rounded
-						/>
-					)}
 
-					<div className="info">
-						<div className="name-rent">
-							{/* <span className="name">
+						{owner ? (
+							<div className="image-list">
+								<ImageOwner image={data.img1} label="img1" />
+								<ImageOwner image={data.img2} label="img2" />
+							</div>
+						) : data.img2 ? (
+							<AppSlider
+								height={250}
+								data={[data.img1, data.img2]}
+								autoplay={false}
+								rounded
+							/>
+						) : (
+							<AppSlider
+								height={250}
+								data={[data.img1]}
+								autoplay={false}
+								rounded
+							/>
+						)}
+
+						<div className="info">
+							<div className="name-rent">
+								{/* <span className="name">
 								{capitalize(data.apt_name)}
 							</span> */}
-							<span className="name">
-								{capitalize(data.apt_name)}
-								{/* <EditableText
+								<span className="name">
+									{capitalize(data.apt_name)}
+									{/* <EditableText
 									value={capitalize(data.apt_name)}
 								/> */}
-							</span>
+								</span>
 
-							<span className="rent">
-								KES {money(data.rent)}
-								{/* <EditableText
+								<span className="rent">
+									KES {money(data.rent)}
+									{/* <EditableText
 									value={data.rent}
 									display={`KES ${money(data.rent)}`}
 								/> */}
-							</span>
-						</div>
+								</span>
+							</div>
 
-						<p className="location">
-							<FaMapMarkerAlt />{' '}
-							{capitalize(data.town) +
-								', ' +
-								capitalize(data.county)}
-						</p>
+							<p className="location">
+								<FaMapMarkerAlt />{' '}
+								{capitalize(data.town) +
+									', ' +
+									capitalize(data.county)}
+							</p>
 
-						<div className="specs">
-							<div className="spec">
-								<span className="spec-title">Bathroom</span>
-								<span className="spec-body">
-									<FaBath />
-									{data.no_of_bathrooms}
-									{/* <EditableText
+							<div className="specs">
+								<div className="spec">
+									<span className="spec-title">Bathroom</span>
+									<span className="spec-body">
+										<FaBath />
+										{data.no_of_bathrooms}
+										{/* <EditableText
 										value={data.no_of_bathrooms}
 									/> */}
-								</span>
+									</span>
+								</div>
+								<div className="spec">
+									<span className="spec-title">Bedroom</span>
+									<span className="spec-body">
+										<FaBed /> {data.no_of_bedrooms}
+									</span>
+								</div>
+								<div className="spec">
+									<p className="spec-title">Description</p>
+									<p className="spec-body">{data.apt_desc}</p>
+								</div>
 							</div>
-							<div className="spec">
-								<span className="spec-title">Bedroom</span>
-								<span className="spec-body">
-									<FaBed /> {data.no_of_bedrooms}
-								</span>
-							</div>
-							<div className="spec">
-								<p className="spec-title">Description</p>
-								<p className="spec-body">{data.apt_desc}</p>
-							</div>
-						</div>
 
-						{!owner && (
-							<>
-								<OwnerContact data={data} />
+							{!owner && (
+								<>
+									<OwnerContact data={data} />
 
-								{related.length > 0 && (
-									<div className="related-houses">
-										<h3>Related properties</h3>
+									{related.length > 0 && (
+										<div className="related-houses">
+											<h3>Related properties</h3>
 
-										<div className="related-list">
-											{related.map((p, index) => (
-												<HouseRelated
-													data={p}
-													key={index}
-													onClick={() => update(p.id)}
-												/>
-											))}
+											<div className="related-list">
+												{related.map((p, index) => (
+													<HouseRelated
+														data={p}
+														key={index}
+														onClick={() =>
+															update(p.id)
+														}
+													/>
+												))}
+											</div>
 										</div>
-									</div>
-								)}
-							</>
-						)}
-					</div>
-				</main>
+									)}
+								</>
+							)}
+						</div>
+					</main>
+				)}
 			</Container>
 		</>
 	);

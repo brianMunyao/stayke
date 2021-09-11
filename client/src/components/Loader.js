@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Lottie from 'react-lottie';
 
-import animation from '../assets/house-loader.json';
+import anim from '../assets/house-loader.json';
 
-const Loader = () => {
+const Loader = ({ animation, height = 150, speed = 1 }) => {
 	return (
 		<Container>
 			<Lottie
@@ -12,9 +12,10 @@ const Loader = () => {
 				options={{
 					loop: true,
 					autoplay: true,
-					animationData: animation,
+					animationData: animation ? animation : anim,
 				}}
-				height={150}
+				height={height}
+				speed={speed}
 			/>
 		</Container>
 	);
