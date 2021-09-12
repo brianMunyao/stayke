@@ -29,6 +29,7 @@ const SideView = ({ id, visible, owner, update, close }) => {
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(true);
 	const [toEdit, setToEdit] = useState({ key: '', value: '' });
+	const [readMore, setReadMore] = useState(false);
 
 	const history = useHistory();
 
@@ -88,6 +89,25 @@ const SideView = ({ id, visible, owner, update, close }) => {
 				)}
 			</div>
 		);
+	};
+
+	const renderDesc = (more) => {
+		if (data.apt_desc.length > 100) {
+			if (!more) {
+				return (
+					<p className="desc-body" onClick={() => setReadMore(!more)}>
+						{data.apt_desc.substr(0, 100)}{' '}
+						<span className="desc-link">read more</span>
+					</p>
+				);
+			}
+			return (
+				<p className="desc-body" onClick={() => setReadMore(!more)}>
+					{data.apt_desc}
+				</p>
+			);
+		}
+		return <p className="desc-body">{data.apt_desc}</p>;
 	};
 
 	return (
@@ -170,7 +190,7 @@ const SideView = ({ id, visible, owner, update, close }) => {
 								</div>
 								<div className="spec">
 									<p className="spec-title">Description</p>
-									<p className="spec-body">{data.apt_desc}</p>
+									{renderDesc(readMore)}
 								</div>
 							</div>
 
@@ -205,10 +225,6 @@ const SideView = ({ id, visible, owner, update, close }) => {
 	);
 };
 
-const editable = styled.style`
-	color: red;
-`;
-
 const Container = styled.div`
 	position: fixed;
 	height: 100vh;
@@ -225,6 +241,7 @@ const Container = styled.div`
 	transition: all 0.2s ease-in-out;
 	transform: ${(props) =>
 		props.visible ? 'translateX(0)' : 'translateX(110%)'};
+	overflow-y: auto;
 
 	@media (max-width: 540px) {
 		width: 100%;
@@ -356,20 +373,19 @@ const Container = styled.div`
 			color: rgb(124, 124, 124);
 			display: flex;
 			align-items: center;
+			letter-spacing: 0.2px;
 			svg {
 				margin-right: 7px;
 				font-size: 15px;
 			}
 		}
-		.desc-title {
-			font-size: 14px;
-			font-weight: 600;
-			padding: 2px 0 3px;
-		}
 		.desc-body {
-			color: grey;
-			font-size: 14px;
+			color: rgb(124, 124, 124);
+			cursor: pointer;
 			letter-spacing: 0.2px;
+			.desc-link {
+				color: ${colors.primaryLight};
+			}
 		}
 	}
 
