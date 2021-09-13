@@ -11,6 +11,8 @@ const FormItem = ({
 	Icon,
 	inputType,
 	label,
+	list,
+	textarea,
 	placeholder,
 	value,
 	error,
@@ -36,6 +38,45 @@ const FormItem = ({
 				)}
 			</FormButton>
 		);
+	} else if (list) {
+		return (
+			<FormInput width={width}>
+				<label htmlFor={id}>{label}</label>
+				<div>
+					<Icon />
+					<input
+						name={id}
+						list={id}
+						value={value}
+						placeholder={placeholder ? placeholder : label}
+						onChange={onChange}
+						onBlur={onBlur}
+					/>
+					<datalist id={id}>
+						{list.map((val, i) => (
+							<option value={val} key={i} />
+						))}
+					</datalist>
+				</div>
+				<p>{error}</p>
+			</FormInput>
+		);
+	} else if (textarea) {
+		return (
+			<FormInput width={width} textarea>
+				<label htmlFor={id}>{label}</label>
+				<div className="textarea">
+					<textarea
+						name={id}
+						id={id}
+						value={value}
+						placeholder={placeholder ? placeholder : label}
+						onChange={onChange}
+						onBlur={onBlur}></textarea>
+				</div>
+				<p>{error}</p>
+			</FormInput>
+		);
 	} else {
 		return (
 			<FormInput width={width}>
@@ -46,6 +87,7 @@ const FormItem = ({
 						id={id}
 						name={id}
 						type={inputType}
+						min={0}
 						value={value}
 						placeholder={placeholder ? placeholder : label}
 						onChange={onChange}
@@ -60,7 +102,7 @@ const FormItem = ({
 
 const FormInput = styled.div`
 	width: ${(props) => (props.width ? props.width : '100%')};
-	height: 75px;
+	height: ${(props) => (props.textarea ? '82px' : '75px')};
 	margin: 4px 0;
 	overflow: hidden;
 	display: grid;
@@ -85,10 +127,10 @@ const FormInput = styled.div`
 			transform: translate(10px, -50%);
 			pointer-events: none;
 		}
-		input {
+		input,
+		textarea {
 			width: 100%;
 			height: 100%;
-			padding: 0 10px 0 32px;
 			border-radius: 10px;
 			font-size: 14px;
 			border: 1.5px solid rgb(225, 225, 225);
@@ -97,8 +139,13 @@ const FormInput = styled.div`
 				border: 1.5px solid ${colors.primary};
 			}
 		}
+		input {
+			padding: 0 10px 0 32px;
+		}
+		textarea {
+			padding: 3px 10px;
+		}
 	}
-
 	p {
 		font-size: 12px;
 		font-weight: 600;

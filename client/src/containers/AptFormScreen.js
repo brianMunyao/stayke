@@ -12,6 +12,7 @@ import { isLoggedIn } from '../apis/users';
 import FormItem from '../components/FormItem';
 import Logo from '../components/Logo';
 import colors from '../config/colors';
+import { counties } from '../apis/funcs';
 
 const AptFormScreen = () => {
 	const [formError, setFormError] = useState('');
@@ -38,29 +39,30 @@ const AptFormScreen = () => {
 			no_of_bedrooms: Yup.string().required('Field is required'),
 			no_of_bathrooms: Yup.string().required('Field is required'),
 			rent: Yup.string().required('Rent is required'),
-			apt_desc: Yup.string().required('Description is required'),
+			apt_desc: Yup.string().optional('op'),
 		}),
 		onSubmit: async (values) => {
-			setSubmitting(true);
-			setFormError('');
+			console.log(values);
+			// setSubmitting(true);
+			// setFormError('');
 
-			try {
-				const res = await createApartment({
-					...values,
-					user_id: cookies.user.id,
-					img1: null,
-				});
+			// try {
+			// 	const res = await createApartment({
+			// 		...values,
+			// 		user_id: cookies.user.id,
+			// 		img1: null,
+			// 	});
 
-				if (res.data) {
-					setCookie('user', { ...cookies.user, hasProperties: true });
-					history.push('/upload/image/', res.data.id);
-				} else {
-					setFormError(res.error);
-				}
-			} catch (e) {
-				setFormError('Submittion error.');
-				setSubmitting(false);
-			}
+			// 	if (res.data) {
+			// 		setCookie('user', { ...cookies.user, hasProperties: true });
+			// 		history.push('/upload/image/', res.data.id);
+			// 	} else {
+			// 		setFormError(res.error);
+			// 	}
+			// } catch (e) {
+			// 	setFormError('Submittion error.');
+			// 	setSubmitting(false);
+			// }
 		},
 	});
 
@@ -69,7 +71,7 @@ const AptFormScreen = () => {
 	return (
 		<Container>
 			<Navbar>
-				<Logo link />
+				<Logo link size={40} />
 			</Navbar>
 			<Form>
 				<FormInner>
@@ -94,8 +96,8 @@ const AptFormScreen = () => {
 								width="48%"
 								id="county"
 								Icon={FaMapMarkerAlt}
-								inputType="text"
 								label="County"
+								list={counties}
 								value={formik.values.county}
 								error={formik.errors.county}
 								onChange={formik.handleChange}
@@ -153,9 +155,9 @@ const AptFormScreen = () => {
 						/>
 						<FormItem
 							id="apt_desc"
-							Icon={IoPerson}
-							inputType="text"
+							textarea
 							label="Brief Description"
+							placeholder="describe your house"
 							value={formik.values.apt_desc}
 							error={formik.errors.apt_desc}
 							onChange={formik.handleChange}
@@ -183,7 +185,7 @@ const Container = styled.div`
 
 const Navbar = styled.nav`
 	width: 100%;
-	height: 80px;
+	height: 70px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -193,7 +195,6 @@ const Form = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
 	flex: 1;
 `;
 
