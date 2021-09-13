@@ -187,61 +187,60 @@ app.route('/api/property/:id')
             try {
                 try {
                     fs.mkdirSync(path.join(__dirname, 'client/public/uploads'));
-
-                    upload(req, res, async(err) => {
-                        let filepath = path.join(
-                            __dirname,
-                            'client/public/uploads',
-                            req.file.filename
-                        );
-
-                        if (err) {
-                            result.error = err;
-                        } else {
-                            try {
-                                let imgUpdateQuery =
-                                    'UPDATE properties SET img1=$1 WHERE id=$2 RETURNING *';
-
-                                const checkImg = await pool.query(
-                                    'SELECT img1 from properties WHERE id=$1', [id]
-                                );
-                                if (checkImg.rows[0].img1 !== null) {
-                                    imgUpdateQuery =
-                                        'UPDATE properties SET img2=$1 WHERE id=$2 RETURNING *';
-                                }
-
-                                await cloudinary.uploader.upload(
-                                    filepath,
-                                    async(r, err) => {
-                                        await pool
-                                            .query(imgUpdateQuery, [
-                                                r.secure_url,
-                                                id,
-                                            ])
-                                            .then((re) =>
-                                                console.log(
-                                                    'updated:',
-                                                    re.rowCount + ' rows'
-                                                )
-                                            )
-                                            .catch((e) =>
-                                                console.log('query-cloud:', e)
-                                            );
-
-                                        result.data = r.secure_url;
-                                    }
-                                );
-                            } catch (cloud_err) {
-                                console.log('cloud_err:', cloud_err);
-                            }
-                        }
-
-                        fs.unlinkSync(filepath);
-                        res.json(result);
-                    });
-                } catch (err) {
-                    if (err.code !== 'EEXIST') result.error = err;
+                } catch (e) {
+                    if (e.code !== 'EEXIST') result.error = e;
                 }
+
+                upload(req, res, async(err) => {
+                    let filepath = path.join(
+                        __dirname,
+                        'client/public/uploads',
+                        req.file.filename
+                    );
+
+                    if (err) {
+                        result.error = err;
+                    } else {
+                        try {
+                            let imgUpdateQuery =
+                                'UPDATE properties SET img1=$1 WHERE id=$2 RETURNING *';
+
+                            const checkImg = await pool.query(
+                                'SELECT img1 from properties WHERE id=$1', [id]
+                            );
+                            if (checkImg.rows[0].img1 !== null) {
+                                imgUpdateQuery =
+                                    'UPDATE properties SET img2=$1 WHERE id=$2 RETURNING *';
+                            }
+
+                            await cloudinary.uploader.upload(
+                                filepath,
+                                async(r, err) => {
+                                    await pool
+                                        .query(imgUpdateQuery, [
+                                            r.secure_url,
+                                            id,
+                                        ])
+                                        .then(
+                                            (re) =>
+                                            (result.updated = re.rowCount)
+                                        )
+                                        .catch(
+                                            (e) =>
+                                            (result.error = 'cloud-err' + e)
+                                        );
+
+                                    result.data = r.secure_url;
+                                }
+                            );
+                        } catch (cloud_err) {
+                            console.log('cloud_err:', cloud_err);
+                        }
+                    }
+
+                    fs.unlinkSync(filepath);
+                    res.json(result);
+                });
             } catch (e) {
                 result.error = 'File not accessible';
                 res.json(result);

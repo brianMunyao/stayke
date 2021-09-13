@@ -117,7 +117,7 @@ const SideView = ({ id, visible, owner, update, close }) => {
 				{loading ? (
 					<Loader animation={animation} speed={2} height={100} />
 				) : (
-					<main>
+					<div className="inner-container">
 						<div className="close">
 							<FaTimesCircle onClick={close} />
 						</div>
@@ -218,7 +218,7 @@ const SideView = ({ id, visible, owner, update, close }) => {
 								</>
 							)}
 						</div>
-					</main>
+					</div>
 				)}
 			</Container>
 		</>
@@ -236,12 +236,10 @@ const Container = styled.div`
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-shadow: 1px 2px 10px ${colors.grey};
-	padding: 10px;
 	border-radius: 7px 0 0 7px;
 	transition: all 0.2s ease-in-out;
 	transform: ${(props) =>
 		props.visible ? 'translateX(0)' : 'translateX(110%)'};
-	overflow-y: auto;
 
 	@media (max-width: 540px) {
 		width: 100%;
@@ -258,8 +256,8 @@ const Container = styled.div`
 		}
 	}
 
-	main {
-		position: relative;
+	.inner-container {
+		padding: 10px;
 	}
 	.image-list {
 		display: grid;

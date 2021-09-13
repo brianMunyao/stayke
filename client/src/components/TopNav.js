@@ -127,7 +127,7 @@ const Nav = styled.nav`
 		right: 0;
 		width: 200px;
 		height: 100vh;
-		padding: 20px 0;
+		padding: 20px 0 50px;
 		z-index: 5;
 		background-color: white;
 		display: none;
@@ -196,31 +196,6 @@ const Nav = styled.nav`
 		}
 	}
 
-	div.nav-links-mob {
-		position: fixed;
-		top: 0;
-		right: 0;
-		width: 200px;
-		height: 100vh;
-		padding: 20px 0;
-		z-index: 5;
-		background-color: white;
-		display: flex;
-		flex-direction: column;
-		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-		box-shadow: 0px 10px 50px rgb(175, 175, 175);
-		.close-nav-bar {
-			margin-bottom: 15px;
-			font-size: 25px;
-			cursor: pointer;
-		}
-		* {
-			margin: 10px auto;
-		}
-		a.signin {
-			margin-top: auto;
-		}
-	}
 	.nav-bars {
 		font-size: 20px;
 		cursor: pointer;
