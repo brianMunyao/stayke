@@ -42,27 +42,26 @@ const AptFormScreen = () => {
 			apt_desc: Yup.string().optional('op'),
 		}),
 		onSubmit: async (values) => {
-			console.log(values);
-			// setSubmitting(true);
-			// setFormError('');
+			setSubmitting(true);
+			setFormError('');
 
-			// try {
-			// 	const res = await createApartment({
-			// 		...values,
-			// 		user_id: cookies.user.id,
-			// 		img1: null,
-			// 	});
+			try {
+				const res = await createApartment({
+					...values,
+					user_id: cookies.user.id,
+					img1: null,
+				});
 
-			// 	if (res.data) {
-			// 		setCookie('user', { ...cookies.user, hasProperties: true });
-			// 		history.push('/upload/image/', res.data.id);
-			// 	} else {
-			// 		setFormError(res.error);
-			// 	}
-			// } catch (e) {
-			// 	setFormError('Submittion error.');
-			// 	setSubmitting(false);
-			// }
+				if (res.data) {
+					setCookie('user', { ...cookies.user, hasProperties: true });
+					history.push('/upload/image/', res.data.id);
+				} else {
+					setFormError(res.error);
+				}
+			} catch (e) {
+				setFormError('Submittion error.');
+				setSubmitting(false);
+			}
 		},
 	});
 
