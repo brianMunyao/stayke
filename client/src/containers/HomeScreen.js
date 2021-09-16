@@ -9,6 +9,7 @@ import Loader from '../components/Loader';
 import SideView from '../components/SideView';
 import TopNav from '../components/TopNav';
 import HouseListCon from '../components/HouseListCon';
+import FeaturedList from '../components/FeaturedList';
 
 const HomeScreen = () => {
 	const [loading, setLoading] = useState(true);
@@ -34,9 +35,7 @@ const HomeScreen = () => {
 			console.log('caught err, getProperties, home');
 		}
 
-		if (openHouseID !== null) {
-			setScrollLock(true);
-		}
+		if (openHouseID !== null) setScrollLock(true);
 	}, [openHouseID]);
 
 	const toggleNav = () => {
@@ -60,25 +59,17 @@ const HomeScreen = () => {
 
 				<HomeSlider data={properties} />
 
-				{properties.length > 0 && (
-					<div className="houses-section">
-						<p className="featured-title">Featured Houses</p>
-
-						<HouseListCon>
-							{properties.map((p, index) => (
-								<HouseCard
-									key={index}
-									data={p}
-									onClick={() => setOpenHouseID(p.id)}
-								/>
-							))}
-						</HouseListCon>
-					</div>
-				)}
+				<FeaturedList
+					data={properties}
+					onClick={(id) => setOpenHouseID(id)}
+				/>
 
 				{properties.length > 0 && (
 					<div className="houses-section">
-						<p className="featured-title">New Listings</p>
+						<p className="section-title">New Listings</p>
+						<p className="section-subtitle">
+							Be the first to check out the latest houses listed.
+						</p>
 
 						<HouseListCon>
 							{properties.map((p, index) => (
@@ -113,12 +104,25 @@ const Home = styled.div`
 		flex-flow: column;
 		padding-bottom: 15px;
 	}
-	.featured-title {
+	.section-title {
 		font-size: 30px;
-		padding: 20px 30px;
+		padding: 30px 0 10px;
 		font-weight: 700;
 		color: #6c6b69;
 		text-align: center;
+
+		@media (max-width: 1150px) {
+			padding: 20px 0px 5px;
+		}
+	}
+	.section-subtitle {
+		padding: 5px 0 20px;
+		color: #acaba9;
+
+		text-align: center;
+
+		@media (max-width: 1150px) {
+		}
 	}
 `;
 
