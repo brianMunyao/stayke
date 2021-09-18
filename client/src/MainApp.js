@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import AptFormScreen from './containers/AptFormScreen';
 import AptImgScreen from './containers/AptImgScreen';
 import HomeScreen from './containers/HomeScreen';
+import HouseScreen from './containers/HouseScreen';
 import LoginScreen from './containers/LoginScreen';
 import MyProperty from './containers/MyProperty';
 import SearchScreen from './containers/SearchScreen';
@@ -16,7 +17,7 @@ const MainApp = () => {
 			<Switch>
 				<Route path="/" exact component={HomeScreen} />
 
-				<Route path="/property/:id" component={HomeScreen} />
+				<Route path="/property/:id" component={HouseScreen} />
 
 				<Route path="/search" component={SearchScreen} />
 

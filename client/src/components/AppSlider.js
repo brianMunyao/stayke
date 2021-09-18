@@ -5,8 +5,9 @@ import React from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 import { FaCaretRight, FaCaretLeft } from 'react-icons/fa';
+import colors from '../config/colors';
 
-const AppSlider = ({ data, height, rounded, autoplay = true }) => {
+const AppSlider = ({ data, height, rounded, autoplay = false }) => {
 	return (
 		<SliderCon height={height} rounded={rounded}>
 			<Slider
@@ -17,11 +18,11 @@ const AppSlider = ({ data, height, rounded, autoplay = true }) => {
 				autoplaySpeed={4000}
 				slidesToScroll={1}
 				slidesToShow={1}
-				prevArrow={<PrevArrow />}
-				nextArrow={<NextArrow />}>
+				prevArrow={<BasicArrow prev />}
+				nextArrow={<BasicArrow />}>
 				{data.map((d, i) => (
 					<div className="image-con" key={i}>
-						<img src={d} alt="img1" />
+						<img src={d} alt="h" />
 					</div>
 				))}
 			</Slider>
@@ -29,44 +30,30 @@ const AppSlider = ({ data, height, rounded, autoplay = true }) => {
 	);
 };
 
-const PrevArrow = ({ onClick }) => {
+const BasicArrow = ({ prev, onClick }) => {
 	return (
-		<div
-			className="arrow l-arrow"
+		<Arrow
+			className="arrow"
+			prev={prev}
 			onClick={(e) => {
 				onClick();
 				e.stopPropagation();
 			}}>
-			<FaCaretLeft />
-		</div>
-	);
-};
-const NextArrow = ({ onClick }) => {
-	return (
-		<div
-			className="arrow r-arrow"
-			onClick={(e) => {
-				onClick();
-				e.stopPropagation();
-			}}>
-			<FaCaretRight />
-		</div>
+			{prev ? <FaCaretLeft /> : <FaCaretRight />}
+		</Arrow>
 	);
 };
 
 const SliderCon = styled.div`
 	position: relative;
-	&:hover {
-		.arrow {
-			opacity: 1;
-		}
-	}
+	height: ${(props) => (props.height ? `${props.height}px` : 'auto')};
+	border-radius: ${(props) => (props.rounded ? '5px' : 0)};
+	overflow: hidden;
 
 	.image-con {
 		position: relative;
-		height: ${(props) => `${props.height}px`};
 		width: 100%;
-		border-radius: ${(props) => (props.rounded ? '5px' : 0)};
+		height: ${(props) => (props.height ? `${props.height}px` : 'auto')};
 		overflow: hidden;
 
 		img {
@@ -78,35 +65,28 @@ const SliderCon = styled.div`
 			right: -9999px;
 			bottom: -9999px;
 		}
-		div {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 100px;
-		}
 	}
-	.arrow {
-		position: absolute;
-		top: 0;
-		z-index: 1;
-		height: ${(props) => `${props.height}px`};
-		width: 30px;
-		background: #ffffff3e;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: white;
-		opacity: 0;
-		transition: all 0.2s linear;
-		font-size: 20px;
-		&:hover {
-			background: #ffffff6f;
-		}
-	}
-	.r-arrow {
-		right: 0;
+`;
+
+const Arrow = styled.div`
+	position: absolute;
+	top: 0;
+	z-index: 1;
+	height: 100%;
+	width: 30px;
+	background: #ffffff3e;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	opacity: 0.6;
+	transition: all 0.2s linear;
+	font-size: 20px;
+	right: ${(props) => !props.prev && 0};
+
+	&:hover {
+		background: #ffffff6f;
+		opacity: 1;
 	}
 `;
 

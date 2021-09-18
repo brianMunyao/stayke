@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ScrollLock from 'react-scrolllock';
 import styled from 'styled-components';
+import { useHistory } from 'react-router';
 
 import { getProperties } from '../apis/houses';
 import HouseCard from '../components/HouseCard';
@@ -18,6 +19,8 @@ const HomeScreen = () => {
 
 	const [navOpen, setNavOpen] = useState(false);
 	const [scrollLock, setScrollLock] = useState(false);
+
+	const history = useHistory();
 
 	useEffect(() => {
 		try {
@@ -51,6 +54,8 @@ const HomeScreen = () => {
 		setScrollLock(false);
 	};
 
+	const moveToHouse = (id) => history.push(`/property/${id}`);
+
 	if (loading) return <Loader />;
 	return (
 		<ScrollLock isActive={scrollLock}>
@@ -61,7 +66,8 @@ const HomeScreen = () => {
 
 				<FeaturedList
 					data={properties}
-					onClick={(id) => setOpenHouseID(id)}
+					onClick={(id) => moveToHouse(id)}
+					// onClick={(id) => setOpenHouseID(id)}
 				/>
 
 				{properties.length > 0 && (
@@ -76,19 +82,20 @@ const HomeScreen = () => {
 								<HouseCard
 									key={index}
 									data={p}
-									onClick={() => setOpenHouseID(p.id)}
+									onClick={() => moveToHouse(p.id)}
+									// onClick={() => setOpenHouseID(p.id)}
 								/>
 							))}
 						</HouseListCon>
 					</div>
 				)}
 
-				<SideView
+				{/* <SideView
 					id={openHouseID}
 					visible={openHouseID !== null}
 					update={(id) => setOpenHouseID(id)}
 					close={closeOpenHouse}
-				/>
+				/> */}
 
 				<Footer>
 					© {new Date().getFullYear()} stayKe. All rights reserved

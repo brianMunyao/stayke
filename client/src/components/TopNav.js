@@ -165,14 +165,15 @@ const Nav = styled.nav`
 		}
 	}
 	a.signup {
-		border: 1.5px solid ${colors.primary};
 		color: white;
 		background: ${colors.primary};
 		padding: 5px 10px;
 		border-radius: 8px;
 		&:hover {
-			color: ${colors.primary};
-			background: ${colors.white};
+			background: ${colors.primaryDark};
+		}
+		&:active {
+			background: ${colors.primaryDarker};
 		}
 	}
 

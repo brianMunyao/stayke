@@ -16,5 +16,7 @@ const colors = {
     success: '#2dd776',
     successDark: '#1ba758',
     warning: '#fed035',
+
+    pink: '#E91E63',
 };
 export default colors;

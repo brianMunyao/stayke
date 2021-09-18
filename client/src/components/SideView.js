@@ -111,9 +111,10 @@ const SideView = ({ id, visible, owner, update, close }) => {
 	};
 
 	return (
-		<>
-			<ToExit visible={visible} right={490} onClick={close} />
-			<Container id="divBody" visible={visible}>
+		<Container visible={visible}>
+			<div className="exit" onClick={close}></div>
+			{/* <ToExit visible={visible} right={490} onClick={close} /> */}
+			<div id="divBody" className="inner" visible={visible}>
 				{loading ? (
 					<Loader animation={animation} speed={2} height={100} />
 				) : (
@@ -220,180 +221,222 @@ const SideView = ({ id, visible, owner, update, close }) => {
 						</div>
 					</div>
 				)}
-			</Container>
-		</>
+			</div>
+		</Container>
 	);
 };
 
 const Container = styled.div`
 	position: fixed;
-	height: 100vh;
 	z-index: 1;
-	right: 0;
+	left: 0;
 	top: 0;
-	width: 500px;
-	background: white;
-	overflow-x: hidden;
-	overflow-y: auto;
-	box-shadow: 1px 2px 10px ${colors.grey};
-	border-radius: 7px 0 0 7px;
+	width: 100%;
+	height: 100vh;
 	transition: all 0.2s ease-in-out;
 	transform: ${(props) =>
 		props.visible ? 'translateX(0)' : 'translateX(110%)'};
 
-	@media (max-width: 540px) {
-		width: 100%;
-		border-radius: 0;
-	}
+	display: grid;
+	grid-template-rows: 100%;
+	grid-template-columns: 1fr 500px;
 
-	.close {
-		display: flex;
-		align-items: center;
-		svg {
-			cursor: pointer;
-			margin: 10px;
-			font-size: 20px;
+	@media (max-width: 540px) {
+		grid-template-columns: 0 1fr;
+		.inner {
+			border-radius: 0;
 		}
 	}
 
-	.inner-container {
-		padding: 10px;
+	.exit,
+	.inner {
+		/* background-color: green; */
 	}
-	.image-list {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		grid-template-rows: 200px;
-		column-gap: 10px;
-		justify-content: space-evenly;
-		.image-owner {
-			position: relative;
+
+	.exit {
+		background: #af27275a;
+	}
+	.inner {
+		position: relative;
+		background: white;
+		overflow-x: hidden;
+		overflow-y: scroll !important;
+		-webkit-overflow-scrolling: touch;
+		box-shadow: 1px 2px 10px ${colors.grey};
+		transform: ${(props) =>
+			props.visible ? 'translateX(0)' : 'translateX(110%)'};
+		transition: transform 0.2s ease-in-out;
+
+		/* @media (max-width: 540px) {
 			width: 100%;
-			height: 100%;
-			overflow: hidden;
-			border-radius: 10px;
-			img {
-				height: 100%;
-				position: absolute;
-				margin: auto;
-				top: -9999px;
-				left: -9999px;
-				right: -9999px;
-				bottom: -9999px;
-			}
-			.img-new {
-				width: 100%;
-				height: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 50px;
-				border: 1px dashed ${colors.primary};
-				border-radius: 10px;
+			border-radius: 0;
+		} */
+
+		.close {
+			display: flex;
+			align-items: center;
+			svg {
 				cursor: pointer;
-				transition: all 0.1s linear;
-				&:hover {
-					font-size: 60px;
-				}
+				margin: 10px;
+				font-size: 20px;
 			}
-			.img-cover {
-				z-index: 10;
+		}
+
+		.inner-container {
+			padding: 40px 10px 10px;
+			.close {
 				position: absolute;
-				transition: all 1s linear;
-				display: none;
-				align-items: center;
-				justify-content: center;
+				z-index: 1;
 				top: 0;
 				left: 0;
 				width: 100%;
+				background: #ffffffb5;
+			}
+		}
+		.image-list {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-template-rows: 200px;
+			column-gap: 10px;
+			justify-content: space-evenly;
+			.image-owner {
+				position: relative;
+				width: 100%;
 				height: 100%;
-				background-color: #00000065;
-				span {
-					margin: 0 10px;
-					width: 45px;
-					height: 45px;
-					background: ${colors.error};
-					color: white;
+				overflow: hidden;
+				border-radius: 10px;
+				img {
+					height: 100%;
+					position: absolute;
+					margin: auto;
+					top: -9999px;
+					left: -9999px;
+					right: -9999px;
+					bottom: -9999px;
+				}
+				.img-new {
+					width: 100%;
+					height: 100%;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					transition: all 0.2s linear;
-					border-radius: 30px;
-					opacity: 0.8;
+					font-size: 50px;
+					border: 1px dashed ${colors.primary};
+					border-radius: 10px;
 					cursor: pointer;
+					transition: all 0.1s linear;
 					&:hover {
-						opacity: 1;
+						font-size: 60px;
 					}
 				}
+				.img-cover {
+					z-index: 10;
+					position: absolute;
+					transition: all 1s linear;
+					display: none;
+					align-items: center;
+					justify-content: center;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background-color: #00000065;
+					span {
+						margin: 0 10px;
+						width: 45px;
+						height: 45px;
+						background: ${colors.error};
+						color: white;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						transition: all 0.2s linear;
+						border-radius: 30px;
+						opacity: 0.8;
+						cursor: pointer;
+						&:hover {
+							opacity: 1;
+						}
+					}
+				}
+				&:hover .img-cover {
+					display: flex;
+				}
 			}
-			&:hover .img-cover {
-				display: flex;
-			}
 		}
-	}
-	.name-rent {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		font-weight: 600;
-		padding: 5px 0 3px;
-		.name {
-			font-size: 20px;
-		}
-		.rent {
-			font-size: 25px;
-			font-weight: 700;
-			color: ${colors.primary};
-		}
-	}
-	.location {
-		display: flex;
-		align-items: center;
-		font-size: 13px;
-		color: rgb(126, 126, 126);
-		padding: 0 0 5px;
-		svg {
-			margin-right: 2px;
-		}
-	}
-	.specs {
-		display: flex;
-		.spec {
-			display: flex;
-			flex-direction: column;
-			padding: 5px 30px 8px 0;
-		}
-		.spec-title {
-			font-size: 14px;
-			font-weight: 600;
-			margin-bottom: 6px;
-		}
-		.spec-body {
-			color: rgb(124, 124, 124);
+		.name-rent {
 			display: flex;
 			align-items: center;
-			letter-spacing: 0.2px;
+			justify-content: space-between;
+			font-weight: 600;
+			padding: 5px 0 3px;
+			.name {
+				font-size: 20px;
+			}
+			.rent {
+				font-size: 25px;
+				font-weight: 700;
+				color: ${colors.primary};
+			}
+		}
+		.location {
+			display: flex;
+			align-items: center;
+			font-size: 13px;
+			color: rgb(126, 126, 126);
+			padding: 0 0 5px;
 			svg {
-				margin-right: 7px;
-				font-size: 15px;
+				margin-right: 2px;
 			}
 		}
-		.desc-body {
-			color: rgb(124, 124, 124);
-			cursor: pointer;
-			letter-spacing: 0.2px;
-			.desc-link {
-				color: ${colors.primaryLight};
+		.specs {
+			display: flex;
+			.spec {
+				display: flex;
+				flex-direction: column;
+				padding: 5px 30px 8px 0;
+			}
+			.spec-title {
+				font-size: 14px;
+				font-weight: 600;
+				margin-bottom: 6px;
+			}
+			.spec-body {
+				color: rgb(124, 124, 124);
+				display: flex;
+				align-items: center;
+				letter-spacing: 0.2px;
+				svg {
+					margin-right: 7px;
+					font-size: 15px;
+				}
+			}
+			.desc-body {
+				color: rgb(124, 124, 124);
+				cursor: pointer;
+				letter-spacing: 0.2px;
+				.desc-link {
+					color: ${colors.primaryLight};
+				}
 			}
 		}
-	}
 
-	.related-houses {
-		h3 {
-			margin: 15px 0;
-			letter-spacing: 0.3px;
-			opacity: 0.7;
+		.related-houses {
+			h3 {
+				margin: 15px 0;
+				letter-spacing: 0.3px;
+				opacity: 0.7;
+			}
 		}
 	}
+`;
+
+const InnerContainer = styled.div`
+	/* position: fixed;
+	height: 100vh;
+	z-index: 1;
+	right: 0;
+	top: 0; */
 `;
 
 export default SideView;
