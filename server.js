@@ -345,8 +345,8 @@ app.get('/api/search', async(req, res) => {
     res.json(result);
 });
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'client/public/index.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/public/index.html'));
+});
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
