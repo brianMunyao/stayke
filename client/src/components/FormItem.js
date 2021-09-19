@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Lottie from 'react-lottie';
+import { IoEye, IoEyeOff } from 'react-icons/io5';
 
 import colors from '../config/colors';
 import animation from '../assets/circle_loader.json';
@@ -20,6 +21,7 @@ const FormItem = ({
 	onChange,
 	onBlur,
 }) => {
+	const [visible, setVisible] = useState(false);
 	if (inputType === 'submit') {
 		return (
 			<FormButton type="submit" disabled={disabled}>
@@ -82,17 +84,33 @@ const FormItem = ({
 			<FormInput width={width}>
 				<label htmlFor={id}>{label}</label>
 				<div>
-					<Icon />
+					<span className="icon">
+						<Icon />
+					</span>
 					<input
 						id={id}
 						name={id}
-						type={inputType}
+						type={
+							inputType === 'password'
+								? visible
+									? 'text'
+									: inputType
+								: inputType
+						}
 						min={0}
 						value={value}
 						placeholder={placeholder ? placeholder : label}
 						onChange={onChange}
 						onBlur={onBlur}
 					/>
+
+					{inputType === 'password' && (
+						<span
+							className="see"
+							onClick={() => setVisible(!visible)}>
+							{visible ? <IoEye /> : <IoEyeOff />}
+						</span>
+					)}
 				</div>
 				<p>{error}</p>
 			</FormInput>
@@ -119,7 +137,7 @@ const FormInput = styled.div`
 	div {
 		position: relative;
 		overflow: hidden;
-		svg {
+		span.icon svg {
 			opacity: 0.6;
 			position: absolute;
 			z-index: 1;
@@ -144,6 +162,20 @@ const FormInput = styled.div`
 		}
 		textarea {
 			padding: 3px 10px;
+		}
+		span.see {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 8px;
+			font-size: 17px;
+			opacity: 0.6;
+			cursor: pointer;
 		}
 	}
 	p {
