@@ -22,6 +22,7 @@ const TopNav = ({ visible, toggleNav }) => {
 
 	const linksOnAuth = !isLoggedIn(cookies) ? (
 		<>
+			<div className="line nav-line"></div>
 			<Link to="/login" className="signin">
 				Login
 			</Link>
@@ -168,10 +169,6 @@ const Nav = styled.nav`
 		}
 		* {
 			margin: 10px auto;
-		}
-		a.signin,
-		.logout {
-			margin-top: auto;
 		}
 	}
 
