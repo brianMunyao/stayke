@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -8,13 +8,16 @@ import Logo from './Logo';
 import { isLoggedIn } from '../apis/users';
 import colors from '../config/colors';
 import ToExit from './ToExit';
+import Avatar from './Avatar';
 
 const TopNav = ({ visible, toggleNav }) => {
 	const [cookies, removeCookie] = useCookies(['user']);
+	const [avatarHover, setAvatarHover] = useState(false);
 
-	const logout = () => {
-		// window.location.reload();
-		removeCookie('user');
+	const logout = () => removeCookie('user');
+
+	const onMouseEnter = () => {
+		if (window.innerWidth > 768) setAvatarHover(true);
 	};
 
 	const linksOnAuth = !isLoggedIn(cookies) ? (
@@ -28,9 +31,17 @@ const TopNav = ({ visible, toggleNav }) => {
 		</>
 	) : (
 		<>
-			{/* <UserIcon /> */}
-			<div className="logout" onClick={logout}>
-				Logout
+			<div className="auth-link middle-link">Profile</div>
+			<div className="line nav-line"></div>
+			<div
+				className="user-icon"
+				onMouseOver={onMouseEnter}
+				onMouseLeave={() => setAvatarHover(false)}>
+				<Avatar name={cookies.user.fullname} size={35} />
+				<span className="user-fullname">{cookies.user.fullname}</span>
+			</div>
+			<div className="signout" onClick={logout}>
+				Sign Out
 			</div>
 		</>
 	);
@@ -55,7 +66,6 @@ const TopNav = ({ visible, toggleNav }) => {
 					List Property
 				</Link>
 			)}
-			{}
 
 			<Link to="/" className="middle-link">
 				About
@@ -66,7 +76,7 @@ const TopNav = ({ visible, toggleNav }) => {
 	return (
 		<>
 			<ToExit visible={visible} right={200} onClick={toggleNav} nav />
-			<Nav visible={visible}>
+			<Nav visible={visible} avatarHover={avatarHover}>
 				<Logo width={120} link />
 
 				<FaBars className="nav-bars" onClick={toggleNav} />
@@ -81,6 +91,15 @@ const TopNav = ({ visible, toggleNav }) => {
 					<MiddleLinks />
 				</div>
 				<div className="auths">{linksOnAuth}</div>
+
+				<div className="nav-more">
+					<div className="more-square"></div>
+					<div className="more-link">Profile</div>
+					<div className="line"></div>
+					<div className="more-link" onClick={logout}>
+						Sign Out
+					</div>
+				</div>
 			</Nav>
 		</>
 	);
@@ -129,13 +148,14 @@ const Nav = styled.nav`
 		height: 100vh;
 		padding: 20px 0 50px;
 		z-index: 5;
-		background-color: white;
+		background: white;
 		display: none;
 		flex-direction: column;
-		transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		transition: transform 0.3s linear;
 		box-shadow: 0px 10px 50px rgb(175, 175, 175);
 		transform: ${(props) =>
 			props.visible ? 'translateX(0)' : 'translateX(110%)'};
+		overflow: auto;
 
 		@media (max-width: 768px) {
 			display: flex;
@@ -184,22 +204,92 @@ const Nav = styled.nav`
 			border-bottom: 1.5px solid ${colors.primary};
 		}
 	}
-	.logout {
-		color: white;
-		background: ${colors.error};
-		opacity: 0.8;
-		padding: 5px 12px;
-		border-radius: 8px;
-		transition: all 0.2s linear;
+
+	.user-icon {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		user-select: none;
 		cursor: pointer;
+
+		span {
+			margin-left: 8px;
+			font-size: 17px;
+			font-weight: 600;
+			@media (min-width: 768px) {
+				display: none;
+			}
+		}
+	}
+	.signout {
+		color: ${colors.error};
+		user-select: none;
+		opacity: 0.7;
+		cursor: pointer;
+		padding: 2px;
 		&:hover {
 			opacity: 1;
 		}
+	}
+	.signout,
+	.auth-link {
+		@media (min-width: 768px) {
+			display: none;
+		}
+	}
+	.auth-link {
+		user-select: none;
+		cursor: pointer;
 	}
 
 	.nav-bars {
 		font-size: 20px;
 		cursor: pointer;
+	}
+	.nav-more {
+		position: absolute;
+		width: 300px;
+		top: 60px;
+		right: 10px;
+		z-index: 1;
+		display: ${(props) => (props.avatarHover ? 'block' : 'none')};
+		background: white;
+		border-radius: 10px;
+		padding: 10px;
+		box-shadow: 2px 3px 10px #5757579b;
+		&:hover {
+			display: block;
+		}
+		.more-square {
+			width: 25px;
+			height: 20px;
+			position: absolute;
+			right: 35px;
+			top: -12px;
+		}
+
+		.more-link {
+			padding: 8px 10px;
+			transition: all 0.1s linear;
+			user-select: none;
+			cursor: pointer;
+			&:hover {
+				background: ${colors.lightGrey};
+			}
+		}
+	}
+	.line {
+		width: 92%;
+		margin: 4px 4%;
+		height: 1px;
+		background: #bbbbbb;
+		opacity: 0.2;
+	}
+	.nav-line {
+		display: block;
+		@media (min-width: 768px) {
+			display: none;
+		}
 	}
 `;
 
