@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const createApartment = async(property) => {
-    const { data } = await axios.post(`/api`, property);
+    const { data } = await axios.post(`/api/general`, property);
     return data;
 };
 
@@ -28,7 +28,12 @@ export const getRelatedProperties = async(
 };
 
 export const getProperties = async() => {
-    const { data } = await axios.get(`/api`);
+    const { data } = await axios.get('/api/general');
+    return data;
+};
+
+export const getNewestPropeties = async() => {
+    const { data } = await axios.get(`/api/newest`);
     return data;
 };
 

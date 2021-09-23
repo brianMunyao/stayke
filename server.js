@@ -106,15 +106,22 @@ let PROPERTY_QUERY =
     'SELECT properties.*, users.fullname, users.email, users.phone FROM properties INNER JOIN users ON properties.user_id=users.id ';
 
 //get house data
-
-app.route('/api')
+app.route('/api/:type')
     .get(async(req, res) => {
         const result = {};
         try {
-            const properties = await pool.query(
-                `${PROPERTY_QUERY} WHERE properties.img1 IS NOT null`
-            );
-            result.data = properties.rows;
+            if (req.params.type === 'newest') {
+                const newest = await pool.query(
+                    PROPERTY_QUERY +
+                    ' WHERE img1 IS NOT null ORDER BY date_created DESC LIMIT 4'
+                );
+                result.data = newest.rows;
+            } else {
+                const properties = await pool.query(
+                    `${PROPERTY_QUERY} WHERE img1 IS NOT null`
+                );
+                result.data = properties.rows;
+            }
         } catch (e) {
             result.error = 'Error getting houses';
         }

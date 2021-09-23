@@ -3,7 +3,7 @@ import ScrollLock from 'react-scrolllock';
 import styled from 'styled-components';
 import { useHistory } from 'react-router';
 
-import { getProperties } from '../apis/houses';
+import { getNewestPropeties, getProperties } from '../apis/houses';
 import HouseCard from '../components/HouseCard';
 import HomeSlider from '../components/HomeSlider';
 import Loader from '../components/Loader';
@@ -15,6 +15,7 @@ import colors from '../config/colors';
 const HomeScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [properties, setProperties] = useState([]);
+	const [newest, setNewest] = useState([]);
 	const [openHouseID, setOpenHouseID] = useState(null);
 
 	const [navOpen, setNavOpen] = useState(false);
@@ -30,12 +31,25 @@ const HomeScreen = () => {
 						setProperties(res.data);
 						setTimeout(() => setLoading(false), 1000);
 					} else {
-						console.log(res);
+						// error
 					}
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => {
+					// error
+				});
+
+			getNewestPropeties()
+				.then((res) => {
+					if (res.data) setNewest(res.data);
+					else {
+						// error
+					}
+				})
+				.catch((err) => {
+					// error
+				});
 		} catch (e) {
-			console.log('caught err, getProperties, home');
+			// error
 		}
 
 		if (openHouseID !== null) setScrollLock(true);
@@ -69,7 +83,7 @@ const HomeScreen = () => {
 					onClick={(id) => moveToHouse(id)}
 				/>
 
-				{properties.length > 0 && (
+				{newest.length > 0 && (
 					<div className="houses-section">
 						<p className="section-title">New Listings</p>
 						<p className="section-subtitle">
@@ -77,7 +91,7 @@ const HomeScreen = () => {
 						</p>
 
 						<HouseListCon>
-							{properties.map((p, index) => (
+							{newest.map((p, index) => (
 								<HouseCard
 									key={index}
 									data={p}
