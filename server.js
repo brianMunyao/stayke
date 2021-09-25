@@ -29,53 +29,70 @@ cloudinary.config({
 });
 
 //---users routes
-app.post('/api/login', async(req, res) => {
+app.post('/api/user/:type', async(req, res) => {
     const result = {};
     try {
-        const { email, password } = req.body;
-        const user = await pool.query(
-            'SELECT id,fullname,email,phone FROM users WHERE email=$1 AND password=$2', [email, password]
-        );
+        if (req.params.type === 'signup') {
+            const { fullname, phone, email, password } = req.body;
 
-        if (user.rowCount === 1) {
-            const props = await pool.query(
-                'SELECT * FROM properties WHERE user_id=$1', [user.rows[0].id]
+            const checkEmail = await pool.query(
+                'SELECT email FROM users WHERE email=$1', [email]
             );
-            result.data = {
-                ...user.rows[0],
-                hasProperties: props.rowCount > 0,
-            };
+            if (checkEmail.rowCount > 0) {
+                result.error = 'Email already exists';
+            } else {
+                const user = await pool.query(
+                    'INSERT INTO users (fullname,phone,email,password) VALUES($1,$2,$3,$4) RETURNING id,fullname,email,phone,date_joined,verified', [fullname, phone, email, password]
+                );
+                result.data = {...user.rows[0], hasProperties: false };
+            }
             res.json(result);
         } else {
-            result.error = 'Invalid email or password';
-            res.json(result);
+            //default login
+            const { email, password } = req.body;
+            const user = await pool.query(
+                'SELECT id,fullname,email,phone,date_joined,verified FROM users WHERE email=$1 AND password=$2', [email, password]
+            );
+
+            if (user.rowCount === 1) {
+                const props = await pool.query(
+                    'SELECT * FROM properties WHERE user_id=$1', [user.rows[0].id]
+                );
+                result.data = {
+                    ...user.rows[0],
+                    hasProperties: props.rowCount > 0,
+                };
+                res.json(result);
+            } else {
+                result.error = 'Invalid email or password';
+                res.json(result);
+            }
         }
     } catch (e) {
-        result.error = 'Server error. Try again later.';
+        result.error = 'Server Error. Try again later';
         res.json(result);
     }
 });
-app.post('/api/signup', async(req, res) => {
-    const result = {};
-    try {
-        const { fullname, phone, email, password } = req.body;
 
-        //check email
-        const checkEmail = await pool.query(
-            'SELECT email FROM users WHERE email=$1', [email]
-        );
-        if (checkEmail.rowCount > 0) {
-            result.error = 'Email already exists';
-        } else {
-            const user = await pool.query(
-                'INSERT INTO users (fullname,phone,email,password) VALUES($1,$2,$3,$4) RETURNING id,fullname,email,phone,verified', [fullname, phone, email, password]
-            );
-            result.data = {...user.rows[0], hasProperties: false };
-        }
+app.put('/api/user/:id', async(req, res) => {
+    const result = {};
+    const data = req.body;
+
+    try {
+        const query = `UPDATE users SET ${
+			Object.keys(data)[0]
+		}=$1 WHERE id=$2 RETURNING id,fullname,email,phone,date_joined,verified`;
+
+        const updatedUser = await pool.query(query, [
+            Object.values(data)[0],
+            req.params.id,
+        ]);
+        result.data = updatedUser.rows[0];
+        res.json(result);
     } catch (e) {
-        result.error = 'Error creating account. Try again later.';
+        result.error = 'Error updating information';
+        res.json(result);
     }
-    res.json(result);
 });
 
 const upload = multer({

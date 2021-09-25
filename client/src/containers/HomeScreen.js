@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ScrollLock from 'react-scrolllock';
 import styled from 'styled-components';
 import { useHistory } from 'react-router';
+import * as Yup from 'yup';
+import { useCookies } from 'react-cookie';
 
 import { getNewestPropeties, getProperties } from '../apis/houses';
 import HouseCard from '../components/HouseCard';
@@ -11,12 +13,16 @@ import TopNav from '../components/TopNav';
 import HouseListCon from '../components/HouseListCon';
 import FeaturedList from '../components/FeaturedList';
 import colors from '../config/colors';
+import { sendEmail } from '../apis/funcs';
+import { isSubscribed } from '../apis/users';
 
 const HomeScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [properties, setProperties] = useState([]);
 	const [newest, setNewest] = useState([]);
 	const [openHouseID, setOpenHouseID] = useState(null);
+	const [subscription, setSubscription] = useState('');
+	const [cookies, setCookie] = useCookies(['sub']);
 
 	const [navOpen, setNavOpen] = useState(false);
 	const [scrollLock, setScrollLock] = useState(false);
@@ -55,6 +61,18 @@ const HomeScreen = () => {
 		if (openHouseID !== null) setScrollLock(true);
 	}, [openHouseID]);
 
+	const handleSubChange = (e) => {
+		setSubscription(e.target.value);
+	};
+	const handleSubSubmit = () => {
+		if (Yup.string().email().isValidSync(subscription)) {
+			if (!isSubscribed(cookies)) {
+				sendEmail({ to_email: subscription }, 'template_xm745kj');
+				setCookie('sub', { email: subscription });
+			}
+		}
+	};
+
 	const toggleNav = () => {
 		if (openHouseID !== null) {
 			setOpenHouseID(null);
@@ -63,17 +81,12 @@ const HomeScreen = () => {
 		setScrollLock(!scrollLock);
 	};
 
-	const closeOpenHouse = () => {
-		setOpenHouseID(null);
-		setScrollLock(false);
-	};
-
 	const moveToHouse = (id) => history.push(`/property/${id}`);
 
 	if (loading) return <Loader />;
 	return (
 		<ScrollLock isActive={scrollLock}>
-			<Home id="main">
+			<Home id="main" sub={isSubscribed(cookies)}>
 				<TopNav visible={navOpen} toggleNav={toggleNav} />
 
 				<HomeSlider data={properties} />
@@ -109,10 +122,14 @@ const HomeScreen = () => {
 
 					<div className="sub-input">
 						<input
+							value={subscription}
+							onChange={handleSubChange}
 							type="email"
 							placeholder="Enter your email here"
 						/>
-						<span>Subscribe</span>
+						<span onClick={handleSubSubmit}>
+							{isSubscribed(cookies) ? 'Subscribed' : 'Subscribe'}
+						</span>
 					</div>
 				</div>
 
@@ -187,14 +204,15 @@ const Home = styled.div`
 			}
 			span {
 				user-select: none;
-				cursor: pointer;
+				cursor: ${(props) => (props.sub ? 'auto' : 'pointer')};
 				margin: 5px 5px 5px 2px;
 				font-size: 14px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				border-radius: 7px;
-				background: ${colors.primary};
+				background: ${(props) =>
+					props.sub ? colors.primaryLight : colors.primary};
 			}
 		}
 

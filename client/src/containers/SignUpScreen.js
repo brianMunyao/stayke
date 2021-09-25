@@ -8,13 +8,12 @@ import { IoCall, IoLockClosed, IoMail, IoPerson } from 'react-icons/io5';
 import { isLoggedIn, registerUser } from '../apis/users';
 import FormItem from '../components/FormItem';
 import FormContainer from './FormContainer';
-import { encrypt, sendEmail } from '../apis/funcs';
+import { encrypt } from '../apis/funcs';
 
 const SignUpScreen = () => {
 	const [formError, setFormError] = useState('');
 	const [submitting, setSubmitting] = useState(false);
 	const [cookies, setCookie] = useCookies(['user']);
-	const [codeSent,setCodeSent] = useState(false)
 
 	const formik = useFormik({
 		initialValues: {
@@ -60,7 +59,7 @@ const SignUpScreen = () => {
 
 	if (isLoggedIn(cookies)) {
 		if (!cookies.user.verified) {
-						return <Redirect to="/verify" />;
+			return <Redirect to="/verify" />;
 		}
 		return <Redirect to="/" />;
 	}

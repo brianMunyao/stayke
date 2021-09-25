@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { Redirect, useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import { randomGen, sendEmail } from '../apis/funcs';
+import { isLoggedIn, updateUser } from '../apis/users';
 import colors from '../config/colors';
 
 const EnterCode = () => {
-	const [cookies] = useCookies(['user']);
+	const [cookies, setCookie] = useCookies(['user']);
 	const [codeSent, setCodeSent] = useState(false);
 	const [code, setCode] = useState(null);
 	const [userCode, setUserCode] = useState(0);
 	const [error, setError] = useState('');
 
+	const history = useHistory();
+
 	useEffect(() => {
 		if (!codeSent) {
 			const c = randomGen();
 			setCode(c);
-			// sendEmail({
-			// 	to_email: cookies.user.email,
-			// 	to_name: cookies.user.fullname,
-			// 	message: c,
-			// });
+			sendEmail({
+				to_email: cookies.user.email,
+				to_name: cookies.user.fullname,
+				message: c,
+			});
 			setCodeSent(true);
 		}
 	}, [codeSent, cookies.user.email, cookies.user.fullname, code]);
@@ -35,7 +39,10 @@ const EnterCode = () => {
 
 	const checkCode = () => {
 		if (code === Number(userCode)) {
-			//verify
+			updateUser({ verified: true }, cookies.user.id).then((res) => {
+				setCookie('user', res.data);
+				history.push('/');
+			});
 		} else {
 			setError('code incorrect');
 		}
@@ -61,6 +68,14 @@ const EnterCode = () => {
 
 		return <div className={classname}>{c[index]}</div>;
 	};
+
+	if (!isLoggedIn(cookies)) {
+		return <Redirect to="/login" />;
+	} else {
+		if (cookies.user.verified) {
+			return <Redirect to="/" />;
+		}
+	}
 
 	return (
 		<Container>
@@ -91,7 +106,7 @@ const EnterCode = () => {
 					max={999999}
 				/>
 
-				<button>Upload</button>
+				<button onClick={checkCode}>Upload</button>
 			</div>
 		</Container>
 	);

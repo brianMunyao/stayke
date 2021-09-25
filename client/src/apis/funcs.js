@@ -1,5 +1,8 @@
 import md5 from 'md5';
-const emailjs = require('emailjs-com');
+import emailjs, { init } from 'emailjs-com';
+const templateID = 'template_te5f2op';
+const userID = 'user_m2P4mR4cGzSB9kkedTF8R';
+const serviceID = 'service_8x0tj8v';
 
 export const capitalize = (str = '') => {
     return str
@@ -16,15 +19,10 @@ export const encrypt = (str = '') => {
     return md5(str);
 };
 
-export const sendEmail = (params) => {
-    emailjs
-        .send(
-            process.env.serviceID,
-            process.env.templateID,
-            params,
-            process.env.userID
-        )
-        .then(
+export const sendEmail = (params, template = { templateID }) => {
+    try {
+        init(userID);
+        emailjs.send(serviceID, template, params, userID).then(
             (res) => {
                 // console.log('sent' + res);
             },
@@ -32,6 +30,9 @@ export const sendEmail = (params) => {
                 // console.log('not sent', err);
             }
         );
+    } catch (e) {
+        console.log(e);
+    }
 };
 
 export const randomGen = () => {
