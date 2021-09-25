@@ -45,7 +45,9 @@ const FormItem = ({
 			<FormInput width={width}>
 				<label htmlFor={id}>{label}</label>
 				<div>
-					<Icon />
+					<span className="icon">
+						<Icon />
+					</span>
 					<input
 						name={id}
 						list={id}
