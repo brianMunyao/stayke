@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import styled from 'styled-components';
 
@@ -15,10 +15,13 @@ const TopNav = ({ visible, toggleNav }) => {
 	const [avatarHover, setAvatarHover] = useState(false);
 
 	const logout = () => removeCookie('user');
+	const history = useHistory();
 
 	const onMouseEnter = () => {
 		if (window.innerWidth > 768) setAvatarHover(true);
 	};
+
+	const moveToProfile = () => history.push('/profile');
 
 	const linksOnAuth = !isLoggedIn(cookies) ? (
 		<>
@@ -32,12 +35,15 @@ const TopNav = ({ visible, toggleNav }) => {
 		</>
 	) : (
 		<>
-			<div className="auth-link middle-link">Profile</div>
+			<div className="auth-link middle-link" onClick={moveToProfile}>
+				Profile
+			</div>
 			<div className="line nav-line"></div>
 			<div
 				className="user-icon"
 				onMouseOver={onMouseEnter}
-				onMouseLeave={() => setAvatarHover(false)}>
+				onMouseLeave={() => setAvatarHover(false)}
+				onClick={moveToProfile}>
 				<Avatar name={cookies.user.fullname} size={35} />
 				<span className="user-fullname">{cookies.user.fullname}</span>
 			</div>
@@ -95,7 +101,9 @@ const TopNav = ({ visible, toggleNav }) => {
 
 				<div className="nav-more">
 					<div className="more-square"></div>
-					<div className="more-link">Profile</div>
+					<div className="more-link" onClick={moveToProfile}>
+						Profile
+					</div>
 					<div className="line"></div>
 					<div className="more-link" onClick={logout}>
 						Sign Out

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import colors from '../config/colors';
 
-const Avatar = ({ name = '', size = 40 }) => {
+const Avatar = ({ name = '', size = 40, onClick }) => {
 	const getInitials = (n = '') => {
 		const splits = n.split(' ');
 		let initials = '';
@@ -14,7 +14,7 @@ const Avatar = ({ name = '', size = 40 }) => {
 		return initials;
 	};
 	return (
-		<AvatarStyle size={size} className="avatar">
+		<AvatarStyle size={size} className="avatar" onClick={onClick}>
 			{getInitials(name)}
 		</AvatarStyle>
 	);

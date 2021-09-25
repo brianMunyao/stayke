@@ -11,6 +11,7 @@ import SearchScreen from './containers/SearchScreen';
 import SignUpScreen from './containers/SignUpScreen';
 import PageNotFound from './containers/PageNotFound';
 import EnterCode from './containers/EnterCode';
+import ProfileScreen from './containers/ProfileScreen';
 
 const MainApp = () => {
 	return (
@@ -23,6 +24,8 @@ const MainApp = () => {
 				<Route path="/search" component={SearchScreen} />
 
 				<Route path="/verify" component={EnterCode} />
+
+				<Route path="/profile" component={ProfileScreen} />
 
 				<Route path="/login" component={LoginScreen} />
 
