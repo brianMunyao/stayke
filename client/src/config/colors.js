@@ -10,6 +10,7 @@ const colors = {
     lightGrey: 'rgb(235, 235, 235)',
     greyLighter: '#f5f5f5',
     greyish: '#818181',
+    greyImgBg: '#f3f3f3',
 
     error: '#ff6347',
     errorLight: '#ff634733',

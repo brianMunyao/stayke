@@ -4,9 +4,9 @@ import Lottie from 'react-lottie';
 
 import anim from '../assets/house-loader.json';
 
-const Loader = ({ animation, height = 150, speed = 1 }) => {
+const Loader = ({ animation, height = 150, speed = 1, style }) => {
 	return (
-		<Container>
+		<Container style={style}>
 			<Lottie
 				isClickToPauseDisabled={true}
 				options={{

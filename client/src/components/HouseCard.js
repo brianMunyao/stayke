@@ -1,6 +1,3 @@
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-
 import React, { useState } from 'react';
 import {
 	FaBath,
@@ -10,12 +7,13 @@ import {
 	FaPencilAlt,
 	FaTrash,
 } from 'react-icons/fa';
-import Slider from 'react-slick';
 import styled from 'styled-components';
 
 import { capitalize, money } from '../apis/funcs';
 import colors from '../config/colors';
 import AppSlider from './AppSlider';
+import Loader from './Loader';
+import animation from '../assets/image-loading.json';
 
 const HouseCard = ({ owner, editHouse, deleteHouse, data, onClick }) => {
 	const {
@@ -31,6 +29,7 @@ const HouseCard = ({ owner, editHouse, deleteHouse, data, onClick }) => {
 	} = data;
 
 	const [hovered, setHovered] = useState(false);
+	const [imgLoaded, setImgLoaded] = useState(false);
 
 	return (
 		<House
@@ -42,8 +41,27 @@ const HouseCard = ({ owner, editHouse, deleteHouse, data, onClick }) => {
 				<AppSlider height={175} data={[img1, img2]} autoplay={false} />
 			) : (
 				<div className="img">
+					{img1 && !imgLoaded && (
+						<Loader
+							style={{
+								width: '100%',
+								height: '100%',
+								zIndex: 2,
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								background: colors.greyImgBg,
+							}}
+							animation={animation}
+							height={100}
+						/>
+					)}
 					{img1 ? (
-						<img src={img1} alt="house" />
+						<img
+							src={img1}
+							alt="house"
+							onLoad={() => setImgLoaded(true)}
+						/>
 					) : (
 						<div>
 							<FaImage fill={colors.errorLight} />
@@ -85,10 +103,6 @@ const HouseCard = ({ owner, editHouse, deleteHouse, data, onClick }) => {
 	);
 };
 
-const SliderCon = styled.div`
-	position: relative;
-`;
-
 const House = styled.div`
 	cursor: pointer;
 	height: 100%;
@@ -108,7 +122,6 @@ const House = styled.div`
 		position: relative;
 		width: 100%;
 		height: 175px;
-		/* border-radius: 5px; */
 		overflow: hidden;
 
 		img {
@@ -206,11 +219,7 @@ const House = styled.div`
 			}
 			&:hover {
 				opacity: 1;
-				/* background: ${colors.primaryDark}; */
 			}
-			/* &:active {
-				background: ${colors.primaryDarker};
-			} */
 		}
 	}
 `;

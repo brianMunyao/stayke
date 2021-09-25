@@ -3,15 +3,35 @@ import styled from 'styled-components';
 
 import { capitalize, money } from '../apis/funcs';
 import colors from '../config/colors';
-import pattern from '../assets/pattern.jpg';
+import Loader from './Loader';
+import animation from '../assets/image-loading.json';
 
 const FeaturedHouse = ({ data, onClick }) => {
 	const [imgHeight, setImgHeight] = useState(0);
+	const [imgLoaded, setImgLoaded] = useState(false);
 
-	const onImgLoad = ({ target }) => setImgHeight(target.offsetHeight);
+	const onImgLoad = ({ target }) => {
+		setImgHeight(target.offsetHeight);
+		setImgLoaded(true);
+	};
 
 	return (
 		<Container h={imgHeight} onClick={() => onClick(data.id)}>
+			{!imgLoaded && (
+				<Loader
+					style={{
+						width: '100%',
+						height: '100%',
+						zIndex: 2,
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						background: colors.greyImgBg,
+					}}
+					animation={animation}
+					height={100}
+				/>
+			)}
 			<img src={data.img1} alt={data.apt_name} onLoad={onImgLoad} />
 
 			<div className="featured-info">
@@ -34,8 +54,7 @@ const Container = styled.div`
 	height: 300px;
 	width: 94%;
 	margin: 0 3%;
-	background-image: url(${pattern});
-	background-size: 200px 100px;
+	background: ${colors.greyImgBg};
 	border-radius: 10px;
 	overflow: hidden;
 

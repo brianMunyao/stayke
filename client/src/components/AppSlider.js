@@ -1,13 +1,18 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 import { FaCaretRight, FaCaretLeft } from 'react-icons/fa';
+
 import colors from '../config/colors';
+import Loader from './Loader';
+import animation from '../assets/image-loading.json';
 
 const AppSlider = ({ data, height, rounded, autoplay = false }) => {
+	const [imgLoaded, setImgLoaded] = useState(false);
+
 	return (
 		<SliderCon height={height} rounded={rounded}>
 			<Slider
@@ -22,7 +27,26 @@ const AppSlider = ({ data, height, rounded, autoplay = false }) => {
 				nextArrow={<BasicArrow />}>
 				{data.map((d, i) => (
 					<div className="image-con" key={i}>
-						<img src={d} alt="h" />
+						{!imgLoaded && (
+							<Loader
+								style={{
+									width: '100%',
+									height: '100%',
+									zIndex: 2,
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									background: colors.greyImgBg,
+								}}
+								animation={animation}
+								height={100}
+							/>
+						)}
+						<img
+							src={d}
+							alt="h"
+							onLoad={() => setImgLoaded(true)}
+						/>
 					</div>
 				))}
 			</Slider>
