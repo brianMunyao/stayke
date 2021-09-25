@@ -1,4 +1,5 @@
 import md5 from 'md5';
+const emailjs = require('emailjs-com');
 
 export const capitalize = (str = '') => {
     return str
@@ -13,6 +14,28 @@ export const money = (str = '') => {
 
 export const encrypt = (str = '') => {
     return md5(str);
+};
+
+export const sendEmail = (params) => {
+    emailjs
+        .send(
+            process.env.serviceID,
+            process.env.templateID,
+            params,
+            process.env.userID
+        )
+        .then(
+            (res) => {
+                // console.log('sent' + res);
+            },
+            (err) => {
+                // console.log('not sent', err);
+            }
+        );
+};
+
+export const randomGen = () => {
+    return Math.floor(100000 + Math.random() * 900000);
 };
 
 export const counties = [

@@ -10,6 +10,7 @@ import MyProperty from './containers/MyProperty';
 import SearchScreen from './containers/SearchScreen';
 import SignUpScreen from './containers/SignUpScreen';
 import PageNotFound from './containers/PageNotFound';
+import EnterCode from './containers/EnterCode';
 
 const MainApp = () => {
 	return (
@@ -20,6 +21,8 @@ const MainApp = () => {
 				<Route path="/property/:id" component={HouseScreen} />
 
 				<Route path="/search" component={SearchScreen} />
+
+				<Route path="/verify" component={EnterCode} />
 
 				<Route path="/login" component={LoginScreen} />
 

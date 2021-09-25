@@ -68,7 +68,7 @@ app.post('/api/signup', async(req, res) => {
             result.error = 'Email already exists';
         } else {
             const user = await pool.query(
-                'INSERT INTO users (fullname,phone,email,password) VALUES($1,$2,$3,$4) RETURNING id,fullname,email,phone', [fullname, phone, email, password]
+                'INSERT INTO users (fullname,phone,email,password) VALUES($1,$2,$3,$4) RETURNING id,fullname,email,phone,verified', [fullname, phone, email, password]
             );
             result.data = {...user.rows[0], hasProperties: false };
         }
