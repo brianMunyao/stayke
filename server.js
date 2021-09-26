@@ -70,6 +70,7 @@ app.post('/api/user/:type', async(req, res) => {
             }
         }
     } catch (e) {
+        console.log(e);
         result.error = 'Server Error. Try again later';
         res.json(result);
     }
