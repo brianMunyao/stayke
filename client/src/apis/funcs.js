@@ -19,15 +19,15 @@ export const encrypt = (str = '') => {
     return md5(str);
 };
 
-export const sendEmail = async(params, template = { templateID }) => {
+export const sendEmail = async(params, template = templateID) => {
     try {
         init(userID);
         emailjs.send(serviceID, template, params, userID).then(
             (res) => {
-                console.log('email sent');
+                // console.log('email sent');
             },
             (err) => {
-                console.log('code not sent');
+                // console.log('code not sent');
             }
         );
     } catch (e) {

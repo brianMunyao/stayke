@@ -51,8 +51,7 @@ const SignUpScreen = () => {
 					setSubmitting(false);
 				}
 			} catch (e) {
-				console.log(e);
-				setFormError('Submittion error.');
+				setFormError('Submittion error. Try again later.');
 				setSubmitting(false);
 			}
 		},
