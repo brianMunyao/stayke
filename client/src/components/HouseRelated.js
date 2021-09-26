@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaBath, FaBed, FaMapMarkerAlt } from 'react-icons/fa';
 
 import styled from 'styled-components';
 import colors from '../config/colors';
 import { capitalize } from '../apis/funcs';
+import Loader from './Loader';
+import animation from '../assets/image-loading.json';
 
 const HouseRelated = ({ data, onClick }) => {
 	const {
@@ -15,11 +17,27 @@ const HouseRelated = ({ data, onClick }) => {
 		no_of_bedrooms,
 		no_of_bathrooms,
 	} = data;
+	const [imgLoaded, setImgLoaded] = useState(false);
 
 	return (
 		<Container onClick={onClick}>
 			<div className="image">
-				<img src={img1} alt="img" />
+				{img1 && !imgLoaded && (
+					<Loader
+						style={{
+							width: '100%',
+							height: '100%',
+							zIndex: 2,
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							background: colors.greyImgBg,
+						}}
+						animation={animation}
+						height={100}
+					/>
+				)}
+				<img src={img1} alt="img" onLoad={() => setImgLoaded(true)} />
 			</div>
 			<div className="details">
 				<p className="name">{capitalize(apt_name)}</p>
