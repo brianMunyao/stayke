@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Redirect, useHistory, useLocation } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import ScrollLock from 'react-scrolllock';
-import { FaEye, FaPen, FaPlusCircle } from 'react-icons/fa';
+import { FaPlusCircle } from 'react-icons/fa';
 import styled from 'styled-components';
 
-import { deleteProperty, getMyProperties, getProperties } from '../apis/houses';
+import { deleteProperty, getMyProperties } from '../apis/houses';
 import { isLoggedIn } from '../apis/users';
 import HouseCard from '../components/HouseCard';
 import HouseListCon from '../components/HouseListCon';
@@ -17,7 +17,6 @@ import colors from '../config/colors';
 const MyProperty = () => {
 	const [cookies] = useCookies(['user']);
 	const [myProperties, setMyProperties] = useState([]);
-	const [editMode, setEditMode] = useState(false);
 
 	const [openHouseID, setOpenHouseID] = useState(null);
 	const [scrollLock, setScrollLock] = useState(false);
@@ -32,17 +31,13 @@ const MyProperty = () => {
 				setMyProperties(res.data);
 			}
 		} catch (e) {}
-
-		// console.log(res);
 	}, [cookies]);
 
 	useEffect(() => {
-		// try {
 		_getMyProperties();
 		if (openHouseID !== null) {
 			setScrollLock(true);
 		}
-		// } catch (e) {}
 	}, [_getMyProperties, openHouseID]);
 
 	if (!isLoggedIn(cookies)) {
@@ -68,8 +63,6 @@ const MyProperty = () => {
 		setScrollLock(false);
 	};
 
-	const toggleMode = () => setEditMode(!editMode);
-
 	return (
 		<ScrollLock isActive={scrollLock}>
 			<Container>
@@ -81,18 +74,6 @@ const MyProperty = () => {
 								capitalize(myProperties[0].fullname)}
 						</div>
 					</div>
-					{/* <div className="mode">
-						{editMode ? (
-							<span onClick={toggleMode}>
-								<FaEye />
-								Public View
-							</span>
-						) : (
-							<span onClick={toggleMode}>
-								<FaPen /> Edit Mode
-							</span>
-						)}
-					</div> */}
 				</div>
 				<HouseListCon>
 					<div className="new-house" onClick={addNewProperty}>

@@ -9,6 +9,7 @@ import { isLoggedIn } from '../apis/users';
 import colors from '../config/colors';
 import ToExit from './ToExit';
 import Avatar from './Avatar';
+import { capitalize } from '../apis/funcs';
 
 const TopNav = ({ visible, toggleNav }) => {
 	const [cookies, removeCookie] = useCookies(['user']);
@@ -45,7 +46,9 @@ const TopNav = ({ visible, toggleNav }) => {
 				onMouseLeave={() => setAvatarHover(false)}
 				onClick={moveToProfile}>
 				<Avatar name={cookies.user.fullname} size={35} />
-				<span className="user-fullname">{cookies.user.fullname}</span>
+				<span className="user-fullname">
+					{capitalize(cookies.user.fullname)}
+				</span>
 			</div>
 			<div className="signout" onClick={logout}>
 				Sign Out

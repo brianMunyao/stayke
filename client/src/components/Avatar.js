@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import colors from '../config/colors';
 
-const Avatar = ({ name = '', size = 40, onClick }) => {
+const Avatar = ({ name = '', size = 40, textSize = 17, onClick }) => {
 	const getInitials = (n = '') => {
 		const splits = n.split(' ');
 		let initials = '';
@@ -14,8 +14,12 @@ const Avatar = ({ name = '', size = 40, onClick }) => {
 		return initials;
 	};
 	return (
-		<AvatarStyle size={size} className="avatar" onClick={onClick}>
-			{getInitials(name)}
+		<AvatarStyle
+			size={size}
+			style={{ fontSize: `${textSize}px` }}
+			className="avatar"
+			onClick={onClick}>
+			{getInitials(name).toUpperCase()}
 		</AvatarStyle>
 	);
 };
@@ -25,7 +29,7 @@ const AvatarStyle = styled.div`
 	color: white;
 	width: ${(props) => `${props.size}px`};
 	height: ${(props) => `${props.size}px`};
-	border-radius: 25px;
+	border-radius: ${(props) => `${props.size / 2}px`};
 	letter-spacing: 0.5px;
 	display: flex;
 	align-items: center;
