@@ -6,7 +6,7 @@ export const createApartment = async(property) => {
 };
 
 export const searchHouse = async(params) => {
-    const { data } = await axios.get(`/api/search`, { params });
+    const { data } = await axios.post(`/api/search/properties`, { params });
     return data;
 };
 
@@ -49,8 +49,8 @@ export const deleteImage = async(id, label) => {
     return data;
 };
 
-export const updateProperty = async(property) => {
-    const { data } = await axios.put(`/api/property/${property.id}`, property);
+export const updateInfo = async(obj, id) => {
+    const { data } = await axios.put(`/api/update/property/${id}`, obj);
     return data;
 };
 

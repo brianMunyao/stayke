@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import {
 	FaBath,
 	FaBed,
-	FaImage,
 	FaMapMarkerAlt,
 	FaPlusCircle,
 	FaTimesCircle,
@@ -13,23 +11,19 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { capitalize, money } from '../apis/funcs';
-import { deleteImage, getProperty, updateProperty } from '../apis/houses';
+import { deleteImage, getProperty, updateInfo } from '../apis/houses';
 import colors from '../config/colors';
 import AppSlider from './AppSlider';
 import EditableText from './EditableText';
 import HouseRelated from './HouseRelated';
 import Loader from './Loader';
 import OwnerContact from './OwnerContact';
-import ToExit from './ToExit';
 import animation from '../assets/load-house.json';
 
 const SideView = ({ id, visible, owner, update, close }) => {
-	const [cookies] = useCookies(['user']);
 	const [related, setRelated] = useState([]);
 	const [data, setData] = useState({});
 	const [loading, setLoading] = useState(true);
-	const [toEdit, setToEdit] = useState({ key: '', value: '' });
-	const [readMore, setReadMore] = useState(false);
 
 	const history = useHistory();
 
@@ -54,20 +48,19 @@ const SideView = ({ id, visible, owner, update, close }) => {
 
 	const addImage = () => history.push('/upload/image/', id);
 
-	const updateHouse = async () => {
-		const res = await updateProperty({
-			id,
-			...toEdit,
-		});
-
-		if (res.data) {
-			setData({ ...data, ...res.data });
-		}
-	};
-
 	const _deleteImage = async (label) => {
 		const res = await deleteImage(id, label);
 		if (res.data) close();
+	};
+
+	const updateData = (val, label) => {
+		const obj = {};
+		obj[label] = val;
+		updateInfo(obj, id).then((res) => {
+			if (res.data) {
+				setData(res.data);
+			}
+		});
 	};
 
 	const ImageOwner = ({ image, label }) => {
@@ -91,29 +84,9 @@ const SideView = ({ id, visible, owner, update, close }) => {
 		);
 	};
 
-	const renderDesc = (more) => {
-		if (data.apt_desc.length > 100) {
-			if (!more) {
-				return (
-					<p className="desc-body" onClick={() => setReadMore(!more)}>
-						{data.apt_desc.substr(0, 100)}{' '}
-						<span className="desc-link">read more</span>
-					</p>
-				);
-			}
-			return (
-				<p className="desc-body" onClick={() => setReadMore(!more)}>
-					{data.apt_desc}
-				</p>
-			);
-		}
-		return <p className="desc-body">{data.apt_desc}</p>;
-	};
-
 	return (
 		<Container visible={visible}>
 			<div className="exit" onClick={close}></div>
-			{/* <ToExit visible={visible} right={490} onClick={close} /> */}
 			<div id="divBody" className="inner" visible={visible}>
 				{loading ? (
 					<Loader animation={animation} speed={2} height={100} />
@@ -146,22 +119,23 @@ const SideView = ({ id, visible, owner, update, close }) => {
 
 						<div className="info">
 							<div className="name-rent">
-								{/* <span className="name">
-								{capitalize(data.apt_name)}
-							</span> */}
 								<span className="name">
-									{capitalize(data.apt_name)}
-									{/* <EditableText
-									value={capitalize(data.apt_name)}
-								/> */}
+									<EditableText
+										value={capitalize(data.apt_name)}
+										onBlur={(val) =>
+											updateData(val, 'apt_name')
+										}
+									/>
 								</span>
 
 								<span className="rent">
-									KES {money(data.rent)}
-									{/* <EditableText
-									value={data.rent}
-									display={`KES ${money(data.rent)}`}
-								/> */}
+									<EditableText
+										value={data.rent}
+										onBlur={(val) =>
+											updateData(val, 'rent')
+										}
+										display={`KES ${money(data.rent)}`}
+									/>
 								</span>
 							</div>
 
@@ -177,21 +151,49 @@ const SideView = ({ id, visible, owner, update, close }) => {
 									<span className="spec-title">Bathroom</span>
 									<span className="spec-body">
 										<FaBath />
-										{data.no_of_bathrooms}
-										{/* <EditableText
-										value={data.no_of_bathrooms}
-									/> */}
+										<EditableText
+											value={data.no_of_bathrooms}
+											inputStyle={{ width: '40px' }}
+											onBlur={(val) =>
+												updateData(
+													val,
+													'no_of_bathrooms'
+												)
+											}
+										/>
 									</span>
 								</div>
 								<div className="spec">
 									<span className="spec-title">Bedroom</span>
 									<span className="spec-body">
-										<FaBed /> {data.no_of_bedrooms}
+										<FaBed />
+										<EditableText
+											value={data.no_of_bedrooms}
+											inputStyle={{ width: '40px' }}
+											onBlur={(val) =>
+												updateData(
+													val,
+													'no_of_bedrooms'
+												)
+											}
+										/>
 									</span>
 								</div>
 								<div className="spec">
 									<p className="spec-title">Description</p>
-									{renderDesc(readMore)}
+									<p className="desc-body">
+										<EditableText
+											value={data.apt_desc}
+											inputStyle={{
+												width: '258px',
+												height: '100px',
+											}}
+											textarea
+											onBlur={(val) =>
+												updateData(val, 'apt_desc')
+											}
+										/>
+									</p>
 								</div>
 							</div>
 
@@ -248,13 +250,8 @@ const Container = styled.div`
 		}
 	}
 
-	.exit,
-	.inner {
-		/* background-color: green; */
-	}
-
 	.exit {
-		background: #af27275a;
+		background: #ffffff96;
 	}
 	.inner {
 		position: relative;
@@ -266,11 +263,6 @@ const Container = styled.div`
 		transform: ${(props) =>
 			props.visible ? 'translateX(0)' : 'translateX(110%)'};
 		transition: transform 0.2s ease-in-out;
-
-		/* @media (max-width: 540px) {
-			width: 100%;
-			border-radius: 0;
-		} */
 
 		.close {
 			display: flex;
@@ -429,14 +421,6 @@ const Container = styled.div`
 			}
 		}
 	}
-`;
-
-const InnerContainer = styled.div`
-	/* position: fixed;
-	height: 100vh;
-	z-index: 1;
-	right: 0;
-	top: 0; */
 `;
 
 export default SideView;

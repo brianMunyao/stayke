@@ -7,6 +7,7 @@ const cloudinary = require('cloudinary');
 
 require('dotenv').config();
 const pool = require('./db');
+const { type } = require('os');
 
 const app = express();
 app.use(cors());
@@ -70,27 +71,6 @@ app.post('/api/user/:type', async(req, res) => {
         }
     } catch (e) {
         result.error = 'Server Error. Try again later';
-        res.json(result);
-    }
-});
-
-app.put('/api/user/:id', async(req, res) => {
-    const result = {};
-    const data = req.body;
-
-    try {
-        const query = `UPDATE users SET ${
-			Object.keys(data)[0]
-		}=$1 WHERE id=$2 RETURNING id,fullname,email,phone,date_joined,verified`;
-
-        const updatedUser = await pool.query(query, [
-            Object.values(data)[0],
-            req.params.id,
-        ]);
-        result.data = updatedUser.rows[0];
-        res.json(result);
-    } catch (e) {
-        result.error = 'Error updating information';
         res.json(result);
     }
 });
@@ -161,7 +141,7 @@ app.route('/api/:type')
         res.json(result);
     });
 
-// //get properties by owner id
+//get properties by owner id
 app.get('/api/properties/:id', async(req, res) => {
     const result = {};
     try {
@@ -305,9 +285,50 @@ app.put('/api/property/update/:id', async(req, res) => {
     res.json(result);
 });
 
-app.get('/api/search', async(req, res) => {
+app.put('/api/update/:type/:id', async(req, res) => {
     const result = {};
-    const { term, bathrooms, bedrooms, rent } = req.query;
+    const data = req.body;
+
+    if (req.params.type === 'property') {
+        const query = `UPDATE properties SET ${
+			Object.keys(data)[0]
+		}=$1 WHERE id=$2`;
+        try {
+            pool.query(query, [Object.values(data)[0], req.params.id]).then(
+                async() => {
+                    const d = await pool.query(
+                        PROPERTY_QUERY + ' WHERE properties.id=$1', [req.params.id]
+                    );
+                    result.data = d.rows[0];
+                    res.json(result);
+                }
+            );
+        } catch (e) {
+            result.error = 'Error updating information';
+            res.json(result);
+        }
+    } else {
+        try {
+            const query = `UPDATE users SET ${
+				Object.keys(data)[0]
+			}=$1 WHERE id=$2 RETURNING id,fullname,email,phone,date_joined,verified`;
+
+            const updatedUser = await pool.query(query, [
+                Object.values(data)[0],
+                req.params.id,
+            ]);
+            result.data = updatedUser.rows[0];
+            res.json(result);
+        } catch (e) {
+            result.error = 'Error updating information';
+            res.json(result);
+        }
+    }
+});
+
+app.post('/api/search/properties', async(req, res) => {
+    const result = {};
+    const { term, bathrooms, bedrooms, rent } = req.body.params;
 
     let searchQuery = PROPERTY_QUERY;
     const AND = ' AND ';

@@ -11,7 +11,7 @@ export const loginUser = async(user) => {
 };
 
 export const updateUser = async(obj, id) => {
-    const { data } = await axios.put(`/api/user/${id}`, obj);
+    const { data } = await axios.put(`/api/update/user/${id}`, obj);
     return data;
 };
 

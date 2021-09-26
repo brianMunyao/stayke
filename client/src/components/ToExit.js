@@ -24,11 +24,6 @@ const Container = styled.div`
 	transition: all 0.2s ease-in-out;
 	transform: ${(props) =>
 		props.visible ? 'translateX(0)' : 'translateX(-110%)'};
-	/* display: ${(props) => (props.nav ? 'block' : 'none')}; */
-
-	@media (min-width: 768px) {
-		/* display: ${(props) => (props.nav ? 'none' : 'block')}; */
-	}
 `;
 
 export default ToExit;

@@ -38,23 +38,26 @@ const SearchScreen = () => {
 	const Range = createSliderWithTooltip(Slider.Range);
 
 	const applyFilter = useCallback(async (f) => {
-		const res = await searchHouse(f);
-		if (res.data) {
-			setSearched(res.data);
+		searchHouse(f).then((res) => {
+			if (res.data) {
+				setSearched(res.data);
 
-			const _alt = [];
-			res.alt.forEach((val) => {
-				let absent = true;
-				res.data.forEach((house) => {
-					if (val.id === house.id) {
-						absent = false;
-					}
+				const _alt = [];
+				res.alt.forEach((val) => {
+					let absent = true;
+					res.data.forEach((house) => {
+						if (val.id === house.id) {
+							absent = false;
+						}
+					});
+					if (absent) _alt.push(val);
 				});
-				if (absent) _alt.push(val);
-			});
 
-			setAlternative(_alt);
-		}
+				setAlternative(_alt);
+			} else {
+				console.log('error', res);
+			}
+		});
 	}, []);
 
 	const updateFilter = (lbl, val) => {
@@ -90,7 +93,7 @@ const SearchScreen = () => {
 
 	useEffect(() => {
 		if (!loaded) {
-			const f = { ...filter, term: location.state };
+			const f = { ...filter, term: location.state || '' };
 			setFilter(f);
 			applyFilter(f);
 			setLoaded(true);

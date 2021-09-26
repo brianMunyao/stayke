@@ -90,11 +90,16 @@ const HouseCard = ({ owner, editHouse, deleteHouse, data, onClick }) => {
 			<span className="rent">KES {money(rent)}</span>
 
 			{owner && (
-				<div className="manage">
+				<div className="manage" onClick={() => editHouse(id)}>
 					<div className="edit" onClick={() => editHouse(id)}>
 						<FaPencilAlt />
 					</div>
-					<div className="delete" onClick={() => deleteHouse(id)}>
+					<div
+						className="delete"
+						onClick={(e) => {
+							e.stopPropagation();
+							deleteHouse(id);
+						}}>
 						<FaTrash />
 					</div>
 				</div>
