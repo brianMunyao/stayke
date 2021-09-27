@@ -8,8 +8,9 @@ import { useHistory } from 'react-router-dom';
 
 import colors from '../config/colors';
 import main from '../assets/main.jpg';
+import video from '../assets/vid.mp4';
 
-const HomeSlider = ({ data }) => {
+const HomeSlider = ({ data = [] }) => {
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const history = useHistory();
@@ -24,12 +25,15 @@ const HomeSlider = ({ data }) => {
 				className="slider"
 				autoplay
 				infinite
-				speed={1000}
-				autoplaySpeed={3000}
+				speed={1500}
+				autoplaySpeed={10000}
 				slidesToScroll={1}
 				slidesToShow={1}>
+				<div className="image-con">
+					<video src={video} autoPlay loop />
+				</div>
 				{data.length > 0 ? (
-					data.map((d) => (
+					data.slice(-3, -1).map((d) => (
 						<div className="image-con" key={d.id}>
 							<img src={d.img1} alt="img1" />
 						</div>
@@ -166,7 +170,8 @@ const SliderCon = styled.div`
 			bottom: 0;
 		}
 
-		img {
+		img,
+		video {
 			width: 100%;
 			position: absolute;
 			margin: auto;
@@ -176,6 +181,12 @@ const SliderCon = styled.div`
 			bottom: -9999px;
 			@media (max-width: 540px) {
 				height: 100%;
+			}
+		}
+		video {
+			@media (max-width: 768px) {
+				height: 100%;
+				width: auto;
 			}
 		}
 
