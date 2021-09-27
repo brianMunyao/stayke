@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { capitalize, money } from '../apis/funcs';
-import { deleteImage, getProperty, updateInfo } from '../apis/houses';
+import { getProperty, updateInfo } from '../apis/houses';
 import colors from '../config/colors';
 import AppSlider from './AppSlider';
 import EditableText from './EditableText';
@@ -19,6 +19,7 @@ import HouseRelated from './HouseRelated';
 import Loader from './Loader';
 import OwnerContact from './OwnerContact';
 import animation from '../assets/load-house.json';
+import imgAnim from '../assets/image-loading.json';
 
 const SideView = ({ id, visible, owner, update, close }) => {
 	const [related, setRelated] = useState([]);
@@ -49,8 +50,13 @@ const SideView = ({ id, visible, owner, update, close }) => {
 	const addImage = () => history.push('/upload/image/', id);
 
 	const _deleteImage = async (label) => {
-		const res = await deleteImage(id, label);
-		if (res.data) close();
+		const obj = {};
+		obj[label] = null;
+		updateInfo(obj, id).then((res) => {
+			if (res.data) {
+				setData(res.data);
+			}
+		});
 	};
 
 	const updateData = (val, label) => {
@@ -64,11 +70,32 @@ const SideView = ({ id, visible, owner, update, close }) => {
 	};
 
 	const ImageOwner = ({ image, label }) => {
+		const [imgLoaded, setImgLoaded] = useState(false);
+
 		return (
 			<div className="image-owner">
 				{image ? (
 					<>
-						<img src={image} alt="house" />
+						{!imgLoaded && (
+							<Loader
+								style={{
+									width: '100%',
+									height: '100%',
+									zIndex: 2,
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									background: colors.greyImgBg,
+								}}
+								animation={imgAnim}
+								height={100}
+							/>
+						)}
+						<img
+							src={image}
+							alt="house"
+							onLoad={() => setImgLoaded(true)}
+						/>
 						<div className="img-cover">
 							<span onClick={() => _deleteImage(label)}>
 								<FaTrashAlt />
@@ -230,7 +257,7 @@ const SideView = ({ id, visible, owner, update, close }) => {
 
 const Container = styled.div`
 	position: fixed;
-	z-index: 1;
+	z-index: 99;
 	left: 0;
 	top: 0;
 	width: 100%;

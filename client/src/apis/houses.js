@@ -42,13 +42,6 @@ export const getMyProperties = async(id) => {
     return data;
 };
 
-export const deleteImage = async(id, label) => {
-    const { data } = await axios.put(`/api/property/update/${id}`, {
-        label,
-    });
-    return data;
-};
-
 export const updateInfo = async(obj, id) => {
     const { data } = await axios.put(`/api/update/property/${id}`, obj);
     return data;

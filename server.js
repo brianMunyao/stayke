@@ -273,18 +273,6 @@ app.route('/api/property/:id')
         }
     });
 
-app.put('/api/property/update/:id', async(req, res) => {
-    const result = {};
-    const query = `UPDATE properties SET ${req.body.label}=null WHERE id=$1 RETURNING *`;
-    try {
-        const removed = await pool.query(query, [req.params.id]);
-        result.data = removed.rows[0];
-    } catch (e) {
-        result.error = 'Unable to delete image';
-    }
-    res.json(result);
-});
-
 app.put('/api/update/:type/:id', async(req, res) => {
     const result = {};
     const data = req.body;
