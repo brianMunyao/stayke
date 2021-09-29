@@ -110,7 +110,7 @@ app.route('/api/:type')
             if (req.params.type === 'newest') {
                 const newest = await pool.query(
                     PROPERTY_QUERY +
-                    ' WHERE img1 IS NOT null ORDER BY date_created DESC LIMIT 4'
+                    ' WHERE img1 IS NOT null ORDER BY date_created DESC LIMIT 8'
                 );
                 result.data = newest.rows;
             } else {

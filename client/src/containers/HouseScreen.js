@@ -32,6 +32,7 @@ const HouseScreen = () => {
 	};
 
 	useEffect(() => {
+		getWidth();
 		getProperty(id)
 			.then((res) => {
 				if (res.data) {
