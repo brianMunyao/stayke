@@ -312,9 +312,12 @@ const Container = styled.div`
 			height: 100%;
 			top: 0;
 			transition: all 0.1s linear;
-			pointer-events: ${(props) => (props.filtersOpen ? 'all' : 'none')};
+			pointer-events: all;
+			z-index: 10;
 
 			@media (max-width: 830px) {
+				pointer-events: ${(props) =>
+					props.filtersOpen ? 'all' : 'none'};
 				width: 100%;
 				top: 22px;
 				height: ${(props) => (props.filtersOpen ? '150px' : '0')};
