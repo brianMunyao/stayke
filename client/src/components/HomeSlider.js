@@ -1,39 +1,51 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import colors from '../config/colors';
 import main from '../assets/main.jpg';
 import video from '../assets/vid.mp4';
+import { capitalize, money } from '../apis/funcs';
 
-const HomeSlider = ({ data = [] }) => {
+const HomeSlider = ({ data = [], onClick }) => {
 	const [searchTerm, setSearchTerm] = useState('');
+	const [curr, setCurr] = useState(null);
+	const [sliderList, setSliderList] = useState([]);
 
 	const history = useHistory();
+
+	useEffect(() => {
+		setSliderList(data.slice(-4, -1));
+	}, [data]);
 
 	const goToSearch = () => {
 		history.push('/search', searchTerm);
 	};
 
 	return (
-		<SliderCon>
+		<SliderCon curr={curr}>
 			<Slider
-				className="slider"
 				autoplay
 				infinite
+				pauseOnHover={false}
+				pauseOnFocus={false}
+				className="slider"
 				speed={1500}
 				autoplaySpeed={10000}
 				slidesToScroll={1}
-				slidesToShow={1}>
+				slidesToShow={1}
+				beforeChange={() => setCurr(null)}
+				afterChange={(currSlide) => setCurr(sliderList[currSlide - 1])}>
 				<div className="image-con">
-					<video src={video} autoPlay loop />
+					<video src={video} autoPlay loop muted />
 				</div>
 				{data.length > 0 ? (
-					data.slice(-3, -1).map((d) => (
+					sliderList.map((d) => (
 						<div className="image-con" key={d.id}>
 							<img src={d.img1} alt="img1" />
 						</div>
@@ -66,12 +78,77 @@ const HomeSlider = ({ data = [] }) => {
 					</div>
 				</div>
 			</div>
+
+			<div className="sh-info">
+				{curr && (
+					<div
+						className="sh-info-inner"
+						onClick={() => onClick(curr.id)}>
+						<p className="sh-name">{capitalize(curr.apt_name)}</p>
+						<p className="sh-loc">
+							<FaMapMarkerAlt />
+							{capitalize(curr.town) +
+								', ' +
+								capitalize(curr.county)}
+						</p>
+						<p className="sh-rent">KES {money(curr.rent)}</p>
+					</div>
+				)}
+			</div>
 		</SliderCon>
 	);
 };
 
 const SliderCon = styled.div`
 	position: relative;
+	.sh-info {
+		width: 200px;
+		position: absolute;
+		bottom: 50px;
+		right: 50px;
+		background: white;
+		border-radius: 10px;
+		opacity: 0.9;
+		overflow: hidden;
+		height: ${(props) => (props.curr ? '100px' : 0)};
+		width: ${(props) => (props.curr ? '200px' : 0)};
+		transition: all 0.2s linear;
+		cursor: pointer;
+		&:hover {
+			opacity: 1;
+		}
+		.sh-info-inner {
+			position: relative;
+			padding: 10px;
+			width: 100%;
+			height: 100%;
+			.sh-name {
+				font-weight: 600;
+				padding: 4px;
+			}
+			.sh-loc {
+				font-size: 12px;
+				opacity: 0.7;
+				font-weight: 500;
+				display: flex;
+				align-items: center;
+				padding: 3px;
+				* {
+					margin-right: 2px;
+				}
+			}
+			.sh-rent {
+				font-weight: 700;
+				color: ${colors.primary};
+				padding: 7px;
+			}
+		}
+
+		@media (max-width: 830px) {
+			height: 0;
+			width: 0;
+		}
+	}
 	.title-con {
 		position: absolute;
 		width: 500px;

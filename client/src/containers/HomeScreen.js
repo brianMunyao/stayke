@@ -90,7 +90,10 @@ const HomeScreen = () => {
 			<Home id="main" sub={isSubscribed(cookies)}>
 				<TopNav visible={navOpen} toggleNav={toggleNav} />
 
-				<HomeSlider data={properties} />
+				<HomeSlider
+					data={properties}
+					onClick={(id) => moveToHouse(id)}
+				/>
 
 				<div className="working-section" id="how">
 					<p className="section-title">How It Works</p>
