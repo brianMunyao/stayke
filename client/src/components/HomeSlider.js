@@ -36,7 +36,7 @@ const HomeSlider = ({ data = [], onClick }) => {
 				pauseOnFocus={false}
 				className="slider"
 				speed={1500}
-				autoplaySpeed={10000}
+				autoplaySpeed={!curr ? 13000 : 8000}
 				slidesToScroll={1}
 				slidesToShow={1}
 				beforeChange={() => setCurr(null)}
