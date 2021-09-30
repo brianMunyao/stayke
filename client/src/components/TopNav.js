@@ -76,10 +76,13 @@ const TopNav = ({ visible, toggleNav }) => {
 					List Property
 				</Link>
 			)}
+			<a href="#how" className="middle-link">
+				How It Works
+			</a>
 
-			<Link to="/" className="middle-link">
+			{/* <Link to="/" className="middle-link">
 				About
-			</Link>
+			</Link> */}
 		</>
 	);
 

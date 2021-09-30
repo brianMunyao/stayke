@@ -37,7 +37,7 @@ const FeaturedList = ({ data, onClick }) => {
 
 const Container = styled.div`
 	overflow-x: hidden;
-	padding: 50px 100px;
+	padding: 20px 100px;
 	transition: all 0.2s linear;
 	.slick-slider {
 		margin: 0 8px;

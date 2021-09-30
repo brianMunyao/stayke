@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ScrollLock from 'react-scrolllock';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useHistory } from 'react-router';
 import * as Yup from 'yup';
 import { useCookies } from 'react-cookie';
+import { IoCall, IoHome, IoSearch } from 'react-icons/io5';
 
 import { getNewestPropeties, getProperties } from '../apis/houses';
 import HouseCard from '../components/HouseCard';
@@ -91,6 +92,46 @@ const HomeScreen = () => {
 
 				<HomeSlider data={properties} />
 
+				<div className="working-section" id="how">
+					<p className="section-title">How It Works</p>
+					<p className="section-subtitle">
+						Our simple steps that help you find the perfect home.
+					</p>
+
+					<div className="working-items">
+						<div className="working-item">
+							<IoSearch />
+							<div>
+								<p className="w-title">Search</p>
+								<p className="w-subtitle">
+									Browse through the listed properties with
+									properties you like.
+								</p>
+							</div>
+						</div>
+						<div className="working-item">
+							<IoHome />
+							<div>
+								<p className="w-title">Find Home</p>
+								<p className="w-subtitle">
+									Settle on a house choice you may be
+									interested to live in.
+								</p>
+							</div>
+						</div>
+						<div className="working-item">
+							<IoCall />
+							<div>
+								<p className="w-title">Call to Book</p>
+								<p className="w-subtitle">
+									Get in touch with the property owner to book
+									your next perfect home.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<FeaturedList
 					data={properties}
 					onClick={(id) => moveToHouse(id)}
@@ -141,6 +182,30 @@ const HomeScreen = () => {
 	);
 };
 
+const iconShake = keyframes`
+	0%{
+		transform: rotate(0);
+	}
+	20%{
+		transform: rotate(10deg)
+	}
+	30%{
+		transform: rotate(5deg);
+	}
+	40%{
+		transform: rotate(0);
+	}
+	60%{
+		transform: rotate(-10deg);
+	}
+	80%{
+		transform: rotate(-5deg);
+	}
+	100%{
+		transform: rotate(0);
+	}
+`;
+
 const Home = styled.div`
 	.houses-section {
 		display: flex;
@@ -161,8 +226,117 @@ const Home = styled.div`
 	.section-subtitle {
 		padding: 5px 0 20px;
 		color: #acaba9;
-
 		text-align: center;
+	}
+
+	.working-section {
+		width: 100%;
+		padding: 10px 80px;
+		transition: all 0.1s linear;
+
+		.working-items {
+			display: grid;
+			gap: 20px;
+			width: 90%;
+			margin: 0 5%;
+			grid-template-columns: repeat(3, minmax(250px, 1fr));
+			grid-auto-rows: 210px;
+
+			.working-item {
+				width: 86%;
+				margin: 0 7%;
+				height: 100%;
+				box-shadow: 1px 1px 10px #d8d8d8a2;
+				padding: 10px 15px;
+				border-radius: 5px;
+				transition: all 0.1s linear;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-evenly;
+				user-select: none;
+				background: white;
+
+				svg {
+					font-size: 40px;
+					margin: 5px 10px;
+					color: ${colors.primary};
+					transition: all 0.1s linear;
+				}
+				p {
+					padding: 4px 2px;
+					letter-spacing: 0.2px;
+				}
+				.w-title {
+					font-size: 17px;
+					font-weight: 700;
+					opacity: 0.7;
+				}
+				.w-subtitle {
+					font-size: 15px;
+					font-weight: 400;
+					opacity: 0.6;
+				}
+
+				&:hover {
+					svg {
+						animation: ${iconShake} 0.4s ease-in-out 1;
+					}
+				}
+			}
+		}
+		@media (max-width: 1120px) {
+			padding: 10px 50px;
+			.working-items {
+				gap: 15px;
+				width: 96%;
+				margin: 0 2%;
+				.working-item {
+					width: 86%;
+					margin: 0 7%;
+				}
+			}
+		}
+		@media (max-width: 900px) {
+			padding: 10px;
+
+			.working-items {
+				.working-item {
+					width: 100%;
+					margin: 0;
+				}
+			}
+		}
+		@media (max-width: 850px) {
+			.working-items {
+				grid-template-columns: repeat(3, minmax(220px, 1fr));
+			}
+		}
+		@media (max-width: 760px) {
+			.working-items {
+				grid-template-columns: 1fr;
+				.working-item {
+					width: 50%;
+					margin: 0 25%;
+				}
+			}
+		}
+		@media (max-width: 600px) {
+			.working-items {
+				.working-item {
+					width: 70%;
+					margin: 0 15%;
+				}
+			}
+		}
+
+		@media (max-width: 500px) {
+			.working-items {
+				.working-item {
+					width: 88%;
+					margin: 0 6%;
+				}
+			}
+		}
 	}
 
 	.subscribe {
