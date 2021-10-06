@@ -9,7 +9,7 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import colors from '../config/colors';
 import main from '../assets/main.jpg';
-import video from '../assets/vid.mp4';
+import video from '../assets/mainvid.mp4';
 import { capitalize, money } from '../apis/funcs';
 
 const HomeSlider = ({ data = [], onClick }) => {
@@ -36,7 +36,7 @@ const HomeSlider = ({ data = [], onClick }) => {
 				pauseOnFocus={false}
 				className="slider"
 				speed={1500}
-				autoplaySpeed={!curr ? 13000 : 8000}
+				autoplaySpeed={!curr ? 15000 : 8000}
 				slidesToScroll={1}
 				slidesToShow={1}
 				beforeChange={() => setCurr(null)}

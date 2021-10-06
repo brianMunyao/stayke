@@ -21,6 +21,7 @@ const ProfileScreen = () => {
 	const [scrollLock, setScrollLock] = useState(false);
 	const [myProperties, setMyProperties] = useState([]);
 	const [openHouseID, setOpenHouseID] = useState(null);
+	const [likes, setLikes] = useState([]);
 
 	const [cookies] = useCookies(['user']);
 
@@ -32,6 +33,7 @@ const ProfileScreen = () => {
 			const res = await getMyProperties(cookies.user.id);
 			if (res.data) {
 				setMyProperties(res.data);
+				setLikes(res.likes);
 			}
 		} catch (e) {}
 	}, [cookies]);
@@ -65,6 +67,8 @@ const ProfileScreen = () => {
 		setOpenHouseID(null);
 		setScrollLock(false);
 	};
+
+	const moveToHouse = (id) => history.push(`/property/${id}`);
 
 	if (!isLoggedIn(cookies)) {
 		return <Redirect to="/login" />;
@@ -120,6 +124,23 @@ const ProfileScreen = () => {
 							/>
 						))}
 					</HouseListCon>
+
+					<p className="p-title mt">
+						Saved properties ({likes.length})
+					</p>
+					{likes.length > 0 ? (
+						<HouseListCon style={{ width: '100%' }}>
+							{likes.map((p, index) => (
+								<HouseCard
+									key={index}
+									data={p}
+									onClick={() => moveToHouse(p.id)}
+								/>
+							))}
+						</HouseListCon>
+					) : (
+						<div className="emptylist">No saved properties</div>
+					)}
 				</div>
 
 				<SideView
@@ -148,10 +169,13 @@ const Container = styled.div`
 
 		.p-title {
 			width: 100%;
-			padding: 5px 10px;
+			padding: 10px;
 			font-weight: 600;
 			letter-spacing: 0.3px;
 			opacity: 0.9;
+		}
+		.mt {
+			margin-top: 10px;
 		}
 
 		.p-name {

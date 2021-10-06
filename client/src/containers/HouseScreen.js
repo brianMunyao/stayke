@@ -1,12 +1,14 @@
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import React, { useEffect, useState } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { IoHeart, IoHeartOutline } from 'react-icons/io5';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import { useCookies } from 'react-cookie';
 
-import { getProperty } from '../apis/houses';
+import { getProperty, likeProperty, dislikeProperty } from '../apis/houses';
+import { isLoggedIn } from '../apis/users';
 import HouseRelated from '../components/HouseRelated';
 import Loader from '../components/Loader';
 import GoBack from '../components/GoBack';
@@ -22,8 +24,9 @@ const HouseScreen = () => {
 	const [loading, setLoading] = useState(true);
 	const [yOffset, setYOffset] = useState(0);
 	const [winWidth, setWinWidth] = useState(0);
-
+	const [cookies] = useCookies(['user']);
 	const [related, setRelated] = useState([]);
+	const [liked, setLiked] = useState(false);
 
 	const history = useHistory();
 
@@ -33,9 +36,10 @@ const HouseScreen = () => {
 
 	useEffect(() => {
 		getWidth();
-		getProperty(id)
+		getProperty(id, isLoggedIn(cookies) ? cookies.user.id : 0)
 			.then((res) => {
 				if (res.data) {
+					setLiked(res.liked ? true : false);
 					setData(res.data);
 					setRelated(res.related.filter((h) => h.id !== Number(id)));
 					setLoading(false);
@@ -51,9 +55,33 @@ const HouseScreen = () => {
 			);
 			window.removeEventListener('resize', getWidth);
 		};
-	}, [id]);
+	}, [id, cookies]);
 
 	const moveToHouse = (id) => history.push(`/property/${id}`);
+
+	const _likeProperty = async () => {
+		if (!isLoggedIn(cookies)) {
+			history.push('/login');
+		} else {
+			const res = await likeProperty({
+				userID: cookies.user.id,
+				propertyID: id,
+			});
+			if (res.data) {
+				setLiked(true);
+			}
+		}
+	};
+
+	const _dislikeProperty = async () => {
+		const res = await dislikeProperty({
+			userID: cookies.user.id,
+			propertyID: id,
+		});
+		if (res.data) {
+			setLiked(false);
+		}
+	};
 
 	return (
 		<Con>
@@ -93,9 +121,19 @@ const HouseScreen = () => {
 									</span>
 
 									<div className="st-etc">
-										<span className="save st-btn">
-											<IoHeartOutline /> Save
-										</span>
+										{liked ? (
+											<span
+												className="st-btn liked"
+												onClick={_dislikeProperty}>
+												<IoHeart /> Saved
+											</span>
+										) : (
+											<span
+												className="st-btn notliked"
+												onClick={_likeProperty}>
+												<IoHeartOutline /> Save
+											</span>
+										)}
 									</div>
 								</div>
 							</div>
@@ -237,10 +275,15 @@ const Con = styled.div`
 							margin-right: 3px;
 						}
 					}
-					.save {
+					.liked {
+						color: ${colors.pink};
+					}
+					.notliked {
 						&:hover {
 							color: ${colors.pink};
 						}
+					}
+					.save {
 					}
 				}
 				.loc {

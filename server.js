@@ -7,7 +7,6 @@ const cloudinary = require('cloudinary');
 
 require('dotenv').config();
 const pool = require('./db');
-const { type } = require('os');
 
 const app = express();
 app.use(cors());
@@ -148,6 +147,11 @@ app.get('/api/properties/:id', async(req, res) => {
         const properties = await pool.query(
             `${PROPERTY_QUERY} WHERE properties.user_id=$1`, [req.params.id]
         );
+        const likes = await pool.query(
+            'SELECT properties.*, likes.property_id, likes.user_id FROM properties INNER JOIN likes ON properties.id=likes.property_id '
+        );
+        result.likes = likes.rows;
+
         result.data = properties.rows;
     } catch (e) {
         result.error = 'Error getting houses';
@@ -156,31 +160,50 @@ app.get('/api/properties/:id', async(req, res) => {
 });
 
 //get specific house
-app.route('/api/property/:id')
+app.route('/api/property/:id/:uId')
     .get(async(req, res) => {
         const result = {};
+        // const { id, uId } = req.params;
         try {
             const property = await pool.query(
                 `${PROPERTY_QUERY} WHERE properties.id=$1`, [req.params.id]
             );
-            const relParams = [
-                property.rows[0].no_of_bathrooms,
-                property.rows[0].no_of_bedrooms,
-                property.rows[0].town,
-                property.rows[0].county,
-            ];
-
-            const related = await pool.query(
-                `${PROPERTY_QUERY} WHERE no_of_bathrooms=$1 OR no_of_bedrooms=$2 OR town ILIKE $3 OR county ILIKE $4 AND img1 IS NOT null`,
-                relParams
-            );
 
             result.data = property.rows[0];
-            result.related = related.rows.filter((r) => r.img1);
+            // const property = await pool.query(PROPERTY_QUERY);
+            // console.log(property.rows);
+
+            if (property.rowCount > 0) {
+                const relParams = [
+                    property.rows[0].no_of_bathrooms,
+                    property.rows[0].no_of_bedrooms,
+                    property.rows[0].town,
+                    property.rows[0].county,
+                    req.params.uId,
+                ];
+
+                const related = await pool.query(
+                    `${PROPERTY_QUERY} WHERE no_of_bathrooms=$1 OR no_of_bedrooms=$2 OR town ILIKE $3 OR county ILIKE $4 OR user_id=$5 AND img1 IS NOT null`,
+                    relParams
+                );
+                result.related = related.rows.filter((r) => r.img1);
+            }
+
+            if (property.rowCount > 0 && req.params.uId) {
+                const liked = await pool.query(
+                    'SELECT * FROM likes WHERE property_id=$1 AND user_id=$2', [req.params.id, req.params.uId]
+                );
+                if (liked.rowCount > 0) {
+                    result.liked = true;
+                }
+            }
+
+            res.json(result);
         } catch (e) {
+            console.log(e);
             result.error = 'Error getting house';
+            res.json(result);
         }
-        res.json(result);
     })
     .put(async(req, res) => {
         const result = {};
@@ -309,6 +332,43 @@ app.put('/api/update/:type/:id', async(req, res) => {
             res.json(result);
         } catch (e) {
             result.error = 'Error updating information';
+            res.json(result);
+        }
+    }
+});
+
+app.post('/api/property/save/:type', async(req, res) => {
+    const result = {};
+    const { userID, propertyID } = req.body;
+
+    if (req.params.type === 'like') {
+        try {
+            const liked = await pool.query(
+                'SELECT id FROM likes WHERE user_id=$1 AND property_id=$2', [userID, propertyID]
+            );
+            if (!liked.rowCount > 0) {
+                const inserted = await pool.query(
+                    'INSERT INTO likes(user_id,property_id) VALUES($1,$2) RETURNING *', [userID, propertyID]
+                );
+                result.data = inserted.rows[0];
+            } else {
+                result.error = 'Already liked';
+            }
+
+            res.json(result);
+        } catch (e) {
+            result.error = 'Error liking';
+            res.json(result);
+        }
+    } else {
+        try {
+            const removeLike = await pool.query(
+                'DELETE FROM likes WHERE  user_id=$1 AND property_id=$2 RETURNING *', [userID, propertyID]
+            );
+            result.data = removeLike.rows;
+            res.json(result);
+        } catch (e) {
+            result.error = 'Error removeing like';
             res.json(result);
         }
     }

@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa';
 import styled from 'styled-components';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import ScrollLock from 'react-scrolllock';
 
 import SearchRadioBtn from '../components/SearchRadioBtn';
@@ -33,6 +33,7 @@ const SearchScreen = () => {
 	};
 
 	const location = useLocation();
+	const history = useHistory();
 
 	const createSliderWithTooltip = Slider.createSliderWithTooltip;
 	const Range = createSliderWithTooltip(Slider.Range);
@@ -77,6 +78,8 @@ const SearchScreen = () => {
 		setFilter(defaultFilter);
 		applyFilter(defaultFilter);
 	};
+
+	const moveToHouse = (id) => history.push(`/property/${id}`);
 
 	const radioMap = (val, index, lbl) => {
 		return (
@@ -194,7 +197,7 @@ const SearchScreen = () => {
 								<HouseCard
 									data={house}
 									key={house.id}
-									onClick={() => setOpenHouseID(house.id)}
+									onClick={() => moveToHouse(house.id)}
 								/>
 							))}
 						</div>
@@ -208,7 +211,7 @@ const SearchScreen = () => {
 											data={house}
 											key={house.id}
 											onClick={() =>
-												setOpenHouseID(house.id)
+												moveToHouse(house.id)
 											}
 										/>
 									))}

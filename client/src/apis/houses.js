@@ -10,8 +10,8 @@ export const searchHouse = async(params) => {
     return data;
 };
 
-export const getProperty = async(id) => {
-    const { data } = await axios.get(`/api/property/${id}`);
+export const getProperty = async(id, userID = 0) => {
+    const { data } = await axios.get(`/api/property/${id}/${userID}`);
     return data;
 };
 
@@ -49,5 +49,14 @@ export const updateInfo = async(obj, id) => {
 
 export const deleteProperty = async(id) => {
     const { data } = await axios.delete(`/api/property/${id}`);
+    return data;
+};
+
+export const likeProperty = async(obj) => {
+    const { data } = await axios.post('/api/property/save/like', obj);
+    return data;
+};
+export const dislikeProperty = async(obj) => {
+    const { data } = await axios.post('/api/property/save/dislike', obj);
     return data;
 };
