@@ -1,15 +1,14 @@
--- CREATE DATABASE stayke IF NOT EXISTS;
-
-CREATE TABLE users(
-    id SERIAL PRIMARY KEY,
+CREATE TABLE users (
+id SERIAL PRIMARY KEY,
     fullname VARCHAR(255),
     email VARCHAR(255),
     password VARCHAR(255),
     phone VARCHAR(255),
+    verified boolean DEFAULT false,
     date_joined date NOT NULL DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE properties(
+CREATE TABLE properties (
     id SERIAL PRIMARY KEY,
     apt_name VARCHAR(255) NOT NULL,
     county VARCHAR(255) NOT NULL,
@@ -24,3 +23,10 @@ CREATE TABLE properties(
     img1 text,
     img2 text
 );
+
+CREATE TABLE likes (
+  id SERIAL PRIMARY KEY,
+  user_id INT,
+  property_id INT
+);
+

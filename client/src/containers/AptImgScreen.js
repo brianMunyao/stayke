@@ -37,9 +37,13 @@ const AptImgScreen = () => {
 			setSubmitting(true);
 
 			await axios
-				.put(`/api/property/${location.state}`, formData, {
-					headers: { 'Content-Type': 'multipart/form-data' },
-				})
+				.put(
+					`http://localhost:5000/api/property/update/${location.state}`,
+					formData,
+					{
+						headers: { 'Content-Type': 'multipart/form-data' },
+					}
+				)
 				.then((res) => {
 					console.log(res);
 					setFormError('');

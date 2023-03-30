@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    build: ./db
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: stayke
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    image: bm6docker/db
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:postgrespassword@localhost:5432/stayke
+    image: bm6docker/backend
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    image: bm6docker/client
+volumes:
+  db-data:
