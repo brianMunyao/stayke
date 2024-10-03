@@ -22,9 +22,9 @@ if (NODE_ENV === 'production') {
 }
 
 cloudinary.config({
-	cloud_name: 'breivaco',
-	api_key: '695799726226989',
-	api_secret: 'NCVGbm4ILNuasgYmQnU2xWhU_NI',
+	cloud_name: '##',
+	api_key: '##',
+	api_secret: '##',
 });
 
 //---users routes
